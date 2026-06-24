@@ -3,182 +3,1142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Profile</title>
+<title>Minecraft Profile - Steve</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
 body{
-margin:0;
-background:#0f0f0f;
-font-family:monospace;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-color:#fff;
+  background:#0a0a1a;
+  font-family:'Press Start 2P',monospace;
+  display:flex;justify-content:center;align-items:flex-start;
+  min-height:100vh;color:#fff;padding:20px 0;
 }
-
 .window{
-width:420px;
-background:#1b1b1b;
-border:3px solid #3aa655;
-box-shadow:0 0 20px rgba(58,166,85,0.4);
-padding:15px;
-position:relative;
-overflow:hidden;
+  width:520px;
+  background:#111;
+  border:4px solid #3aa655;
+  box-shadow:0 0 0 2px #111,0 0 0 4px #3aa655,0 0 60px rgba(58,166,85,0.25);
+  position:relative;overflow:hidden;
 }
-
-.title{
-text-align:center;
-font-size:18px;
-margin-bottom:10px;
-letter-spacing:2px;
-border-bottom:1px solid #3aa655;
-padding-bottom:8px;
+.title-bar{
+  background:#3aa655;padding:8px 12px;
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:1px;color:#000;
 }
+.dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border:2px solid #000;background:#111;display:inline-block;}
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-margin-top:10px;
+/* SCENE */
+.scene{
+  position:relative;height:280px;overflow:hidden;
+  background:linear-gradient(to bottom,#1a0a2e 0%,#2a0a4e 40%,#1a0a2e 100%);
+  border-bottom:3px solid #3aa655;
+  cursor:pointer;user-select:none;
 }
-
-.slot{
-background:#2a2a2a;
-border:1px solid #3aa655;
-padding:8px;
-font-size:12px;
+/* Stars */
+.stars{position:absolute;top:0;left:0;width:100%;height:55%;pointer-events:none;}
+/* Moon */
+.moon{
+  position:absolute;top:14px;right:50px;
+  width:28px;height:28px;background:#ffffcc;
+  box-shadow:0 0 12px #ffffaa;
+  clip-path:polygon(30% 0%,100% 0%,100% 100%,30% 100%,0% 50%);
 }
-
-.full{
-grid-column:span 2;
-}
-
-.player{
-background:#2a2a2a;
-border:1px solid #3aa655;
-padding:8px;
-text-align:center;
-cursor:pointer;
-position:relative;
-}
-
-.status{
-margin-top:10px;
-padding:8px;
-background:#2a2a2a;
-border:1px solid #3aa655;
-text-align:center;
-}
-
-.sky{
-position:absolute;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-font-size:18px;
-transition:top 0.1s linear;
-}
-
+/* Ground layers */
 .ground{
-position:absolute;
-bottom:0;
-left:0;
-width:100%;
-height:20px;
-background:#333;
+  position:absolute;bottom:0;left:0;width:100%;height:80px;
+  background:#2d1a0a;
+}
+.grass-layer{
+  position:absolute;bottom:80px;left:0;width:100%;height:16px;
+  background:#3a7a28;
+}
+/* Torch glow */
+.torch-glow{
+  position:absolute;bottom:80px;
+  width:6px;height:16px;background:#ff8800;
+  box-shadow:0 0 12px 6px rgba(255,140,0,0.5);
+}
+/* Trees */
+.tree{position:absolute;bottom:96px;}
+.tree-trunk{width:8px;height:24px;background:#4a2e0a;margin:0 auto;}
+.tree-leaves{width:32px;height:32px;background:#1a5a10;margin:-8px auto 0;border:2px solid #0a3a08;}
+
+/* Characters - all pixel canvas based */
+.char{
+  position:absolute;
+  image-rendering:pixelated;
+  bottom:80px;
 }
 
-.footer{
-margin-top:10px;
-text-align:center;
-font-size:12px;
-opacity:0.7;
+/* Click hint */
+.hint{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:7px;color:rgba(255,255,255,0.6);text-align:center;
+  line-height:2;pointer-events:none;
+  text-shadow:1px 1px 0 #000;
 }
 
-.shake{
-animation:shake 0.3s;
+/* Damage flash */
+@keyframes dmgFlash{0%{opacity:1}50%{opacity:0.2}100%{opacity:1}}
+.dmg{animation:dmgFlash 0.2s ease 3;}
+
+/* Chat bubble */
+.bubble{
+  position:absolute;background:#000;border:2px solid #3aa655;
+  padding:4px 6px;font-size:6px;color:#3af055;
+  pointer-events:none;white-space:nowrap;z-index:50;
+  line-height:1.6;
+}
+.bubble::after{
+  content:'';position:absolute;bottom:-8px;left:10px;
+  border:4px solid transparent;border-top-color:#3aa655;
 }
 
+/* Explosions */
+@keyframes explode{
+  0%{transform:scale(0.5);opacity:1;}
+  60%{transform:scale(1.4);opacity:0.8;}
+  100%{transform:scale(2);opacity:0;}
+}
+.explosion{
+  position:absolute;z-index:40;pointer-events:none;
+  animation:explode 0.6s ease-out forwards;
+}
+
+/* Health bar */
+@keyframes hpPulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.hp-low{animation:hpPulse 0.5s ease infinite;}
+
+/* Screen effects */
+@keyframes redFlash{0%,100%{background:transparent}50%{background:rgba(200,0,0,0.3)}}
+.red-flash{animation:redFlash 0.3s ease;}
+
+/* Shake */
 @keyframes shake{
-0%{transform:translate(0,0);}
-25%{transform:translate(5px,0);}
-50%{transform:translate(-5px,0);}
-75%{transform:translate(5px,0);}
-100%{transform:translate(0,0);}
+  0%{transform:translate(0,0);}
+  15%{transform:translate(-8px,3px);}
+  30%{transform:translate(8px,-3px);}
+  45%{transform:translate(-6px,2px);}
+  60%{transform:translate(6px,-2px);}
+  75%{transform:translate(-3px,1px);}
+  100%{transform:translate(0,0);}
 }
+.shake{animation:shake 0.5s ease;}
+
+/* XP bar */
+.xp-bar-wrap{
+  height:6px;background:#222;border:1px solid #3aa655;margin-top:6px;
+}
+.xp-bar-fill{
+  height:100%;background:#4fe04f;transition:width 0.3s ease;width:60%;
+}
+
+/* Panels */
+.info-panel{padding:12px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.slot{
+  background:#1a1a1a;border:2px solid #3aa655;
+  padding:8px 6px;font-size:7px;line-height:1.8;color:#c8ffc8;
+}
+.slot .lbl{color:#3aa655;font-size:6px;display:block;margin-bottom:3px;}
+.full{grid-column:span 2;}
+.status-bar{
+  margin-top:6px;background:#1a1a1a;border:2px solid #3aa655;
+  padding:8px 10px;font-size:7px;text-align:center;color:#3aa655;
+  min-height:32px;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.hearts{display:flex;gap:3px;justify-content:center;margin-top:8px;}
+.heart{font-size:13px;transition:all 0.15s;}
+.heart.lost{opacity:0.12;filter:grayscale(1);}
+.footer{margin-top:6px;text-align:center;font-size:6px;opacity:0.4;padding-bottom:4px;}
+.reset-btn{
+  display:none;margin-top:6px;width:100%;
+  background:#3aa655;border:none;color:#000;
+  font-family:'Press Start 2P',monospace;font-size:7px;padding:9px;
+  cursor:pointer;letter-spacing:1px;
+}
+.reset-btn:hover{background:#4dcc6a;}
+
+/* Death screen overlay */
+.death-overlay{
+  display:none;position:absolute;top:0;left:0;width:100%;height:100%;
+  background:rgba(100,0,0,0.7);z-index:100;
+  flex-direction:column;align-items:center;justify-content:center;gap:8px;
+}
+.death-title{font-size:16px;color:#ff4444;text-shadow:2px 2px #000;letter-spacing:2px;}
+.death-sub{font-size:7px;color:#ffaaaa;text-align:center;line-height:2;}
+.death-score{font-size:7px;color:#ffff88;margin-top:4px;}
 </style>
 </head>
 <body>
+<div class="window" id="win">
+  <div class="title-bar">
+    <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    ⛏ MINECRAFT PROFILE
+  </div>
 
-<div class="window" id="window">
+  <div class="scene" id="scene" onclick="startAdventure()">
+    <!-- Stars drawn by JS -->
+    <canvas class="stars" id="starCanvas"></canvas>
+    <div class="moon"></div>
 
-<div class="title">⛏ MINECRAFT PROFILE</div>
+    <!-- Trees -->
+    <div class="tree" style="left:20px">
+      <div class="tree-leaves"></div><div class="tree-trunk"></div>
+    </div>
+    <div class="tree" style="left:60px;bottom:88px">
+      <div class="tree-leaves" style="width:24px;height:24px"></div>
+      <div class="tree-trunk" style="height:16px"></div>
+    </div>
+    <div class="tree" style="right:30px;bottom:80px">
+      <div class="tree-leaves"></div><div class="tree-trunk"></div>
+    </div>
 
-<div class="grid">
+    <!-- Torches -->
+    <div class="torch-glow" style="left:160px"></div>
+    <div class="torch-glow" style="right:160px"></div>
 
-<div class="player" onclick="startFall()" id="steve">Steve</div>
-<div class="slot">Pronouns: he/him</div>
+    <!-- Ground -->
+    <div class="grass-layer"></div>
+    <div class="ground"></div>
 
-<div class="slot">Mode: Survival</div>
-<div class="slot">Difficulty: Hardcore (on accident)</div>
+    <!-- Characters (canvases inserted by JS) -->
+    <div class="hint" id="hint">▶ CLICK TO<br>START ADVENTURE</div>
 
-<div class="slot full">Main Goal: not fall into lava (fails)</div>
-<div class="slot full">Focus: mining straight down (bad idea)</div>
-<div class="slot full">Playstyle: accidental speedrunner to death</div>
+    <!-- Death overlay inside scene -->
+    <div class="death-overlay" id="deathOverlay">
+      <div class="death-title">YOU DIED!</div>
+      <div class="death-sub" id="deathMsg">Killed by a Creeper</div>
+      <div class="death-score" id="deathScore">Score: 0</div>
+    </div>
+  </div>
 
-</div>
-
-<div class="status" id="status">Status: alive</div>
-
-<div class="footer">Credit: JINE</div>
-
-<div class="ground"></div>
+  <div class="info-panel">
+    <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBar"></div></div>
+    <div class="hearts" id="heartsRow">
+      <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
+      <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
+      <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
+      <span class="heart">❤️</span>
+    </div>
+    <div class="grid">
+      <div class="slot"><span class="lbl">// PLAYER</span>Steve</div>
+      <div class="slot"><span class="lbl">// PRONOUNS</span>he/him</div>
+      <div class="slot"><span class="lbl">// MODE</span>Survival</div>
+      <div class="slot"><span class="lbl">// DIFFICULTY</span>Hardcore<br><span style="font-size:6px;opacity:0.6">(on accident)</span></div>
+      <div class="slot full"><span class="lbl">// MAIN GOAL</span>Not fall into lava (fails every time)</div>
+      <div class="slot full"><span class="lbl">// STRATEGY</span>Mining straight down (terrible idea)</div>
+      <div class="slot full"><span class="lbl">// PLAYSTYLE</span>Accidental speedrunner to death</div>
+    </div>
+    <div class="status-bar"><span id="statusText">▶ Click the scene to begin...</span></div>
+    <button class="reset-btn" id="resetBtn" onclick="resetAll()">↺ RESPAWN</button>
+    <div class="footer">Credit: JINE &nbsp;|&nbsp; Click to start your doomed adventure</div>
+  </div>
 </div>
 
 <script>
-let falling = false;
-let pos = 0;
-let speed = 2;
-let interval;
+// ─────────────────────────────────────────────
+// PIXEL COLORS
+// ─────────────────────────────────────────────
+var N = null;
+var SK='#C8916A',HA='#4A2E10',SH='#3A5BC7',PA='#2E2A6B',BO='#111',EY='#111',
+    GR='#3a7a28',GG='#2d6020',WH='#fff',
+    // Creeper
+    CG='#2a7a2a',CD='#1a5a1a',CE='#111',CM='#111',
+    // Zombie
+    ZS='#5a8a5a',ZH='#3a5a3a',ZE='#ff2222',ZC='#1a3a8a',ZP='#1a1a6a',
+    // Skeleton
+    SS='#ddd',SB='#bbb',SE='#111',
+    // Spider
+    SPB='#1a1a1a',SPR='#cc0000',SPL='#333',
+    // Enderman
+    ENB='#111122',ENE='#cc00cc',ENP='#222233',
+    // Creeper explosion
+    EXY='#ffff00',EXO='#ff8800',EXR='#ff2200';
 
-function startFall(){
-if(falling) return;
-falling = true;
+// ─────────────────────────────────────────────
+// PIXEL SPRITE MAPS  (16×32 each, 1px per cell)
+// ─────────────────────────────────────────────
 
-const steve = document.getElementById("steve");
-const windowBox = document.getElementById("window");
-const status = document.getElementById("status");
+// STEVE
+var STEVE=[
+  [N,N,N,N,HA,HA,HA,HA,HA,HA,HA,HA,N,N,N,N],
+  [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
+  [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
+  [N,N,N,HA,EY,SK,EY,SK,SK,EY,SK,EY,HA,N,N,N],
+  [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
+  [N,N,N,HA,SK,HA,HA,SK,SK,HA,HA,SK,HA,N,N,N],
+  [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
+  [N,N,N,N,HA,HA,HA,HA,HA,HA,HA,HA,N,N,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N],
+  [N,N,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,SH,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,PA,PA,PA,PA,PA,N,N,PA,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,PA,N,N,PA,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,PA,PA,PA,PA,N,N,N,N,PA,PA,PA,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,BO,N,BO,BO,BO,BO,BO,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
 
-const fallObj = document.createElement("div");
-fallObj.textContent = "Steve";
-fallObj.className = "sky";
-windowBox.appendChild(fallObj);
+// CREEPER (16x32, shorter - 24 rows used)
+var CREEPER=[
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N],
+  [N,N,N,CG,CE,CE,CG,CG,CG,CG,CE,CE,CG,N,N,N],
+  [N,N,N,CG,CE,CE,CG,CG,CG,CG,CE,CE,CG,N,N,N],
+  [N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N],
+  [N,N,N,CG,CG,CD,CG,CD,CD,CG,CD,CG,CG,N,N,N],
+  [N,N,N,CG,CD,CD,CD,CD,CD,CD,CD,CD,CG,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CD,CG,CD,CD,CD,CD,CG,CD,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
+  [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
+  [N,N,N,N,CD,CG,N,N,N,N,CG,CD,N,N,N,N],
+  [N,N,N,N,CD,CD,N,N,N,N,CD,CD,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
 
-pos = 0;
-speed = 2;
+// ZOMBIE
+var ZOMBIE=[
+  [N,N,N,N,ZH,ZH,ZH,ZH,ZH,ZH,ZH,ZH,N,N,N,N],
+  [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
+  [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
+  [N,N,N,ZH,ZE,ZS,ZE,ZS,ZS,ZE,ZS,ZE,ZH,N,N,N],
+  [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
+  [N,N,N,ZH,ZS,ZH,ZH,ZS,ZS,ZH,ZH,ZS,ZH,N,N,N],
+  [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
+  [N,N,N,N,ZH,ZH,ZH,ZH,ZH,ZH,ZH,ZH,N,N,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N],
+  [N,N,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,ZC,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,ZP,N,N,ZP,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,ZP,N,N,ZP,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,ZP,ZP,ZP,ZP,N,N,N,N,ZP,ZP,ZP,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,N,N,N,N,BO,BO,BO,N,N,N],
+  [N,N,BO,BO,BO,BO,BO,N,BO,BO,BO,BO,BO,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
 
-interval = setInterval(()=>{
-pos += speed;
-speed += 0.4;
+// SKELETON (bone white)
+var SKELETON=[
+  [N,N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N,N],
+  [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
+  [N,N,N,SS,N,SS,SS,SS,SS,SS,SS,N,SS,N,N,N],
+  [N,N,N,SS,SE,SS,SE,SS,SS,SE,SS,SE,SS,N,N,N],
+  [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
+  [N,N,N,SS,SS,SE,SE,SS,SS,SE,SE,SS,SS,N,N,N],
+  [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
+  [N,N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N,N],
+  [N,N,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,N,N],
+  [N,N,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,N,N],
+  [N,N,SB,N,SB,SB,SB,SB,SB,SB,SB,SB,N,SB,N,N],
+  [N,N,SB,N,SB,SB,SB,SB,SB,SB,SB,SB,N,SB,N,N],
+  [N,N,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,N,N],
+  [N,N,SB,N,SB,SB,SB,SB,SB,SB,SB,SB,N,SB,N,N],
+  [N,N,N,N,SB,SB,SB,SB,SB,SB,SB,SB,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SB,N,SB,SB,N,N,N,N,SB,SB,N,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SB,N,SB,SB,N,N,N,N,SB,N,SB,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SB,SB,SB,SB,N,N,N,N,SB,SB,SB,N,N,N],
+  [N,N,SS,SS,SS,SS,N,N,N,N,SS,SS,SS,N,N,N],
+  [N,N,SS,SS,SS,SS,N,N,N,N,SS,SS,SS,N,N,N],
+  [N,N,SS,SS,SS,SS,N,N,N,N,SS,SS,SS,N,N,N],
+  [N,N,SS,SS,SS,N,N,N,N,N,N,SS,SS,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
 
-fallObj.style.top = pos + "px";
+// ENDERMAN (tall thin, use 16x32 but make it tall)
+var ENDERMAN=[
+  [N,N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N,N],
+  [N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N],
+  [N,N,N,ENB,ENE,ENB,ENE,ENB,ENB,ENE,ENB,ENE,ENB,N,N,N],
+  [N,N,N,ENB,ENE,ENB,ENE,ENB,ENB,ENE,ENB,ENE,ENB,N,N,N],
+  [N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N],
+  [N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N],
+  [N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N],
+  [N,N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,ENP,ENP,ENP,ENP,ENP,ENP,ENP,ENP,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,ENB,ENB,N,N,N,N,N,N,N,N,ENB,ENB,N,N],
+  [N,N,ENB,ENB,N,N,N,N,N,N,N,N,ENB,ENB,N,N],
+  [N,N,ENB,ENB,N,N,N,N,N,N,N,N,ENB,ENB,N,N],
+  [N,N,ENB,ENB,ENB,ENB,N,N,N,N,ENB,ENB,ENB,ENB,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,ENB,ENB,N,N,N,N,ENB,ENB,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
 
-if(pos >= 260){
-clearInterval(interval);
-
-windowBox.classList.add("shake");
-
-status.textContent = "Status: died from fall damage 💀";
-
-setTimeout(()=>{
-windowBox.classList.remove("shake");
-fallObj.remove();
-falling = false;
-},800);
+// ─────────────────────────────────────────────
+// DRAW SPRITE ONTO CANVAS
+// ─────────────────────────────────────────────
+function drawSprite(canvas, map, scale) {
+  scale = scale || 2;
+  canvas.width = 16;
+  canvas.height = 32;
+  canvas.style.width = (16*scale)+'px';
+  canvas.style.height = (32*scale)+'px';
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,16,32);
+  for(var y=0;y<map.length;y++){
+    for(var x=0;x<map[y].length;x++){
+      if(map[y][x]){
+        ctx.fillStyle=map[y][x];
+        ctx.fillRect(x,y,1,1);
+      }
+    }
+  }
 }
-},20);
+
+function makeChar(map, scale, bottom, right, left) {
+  var c = document.createElement('canvas');
+  c.className = 'char';
+  c.style.imageRendering = 'pixelated';
+  if(bottom!==undefined) c.style.bottom = bottom+'px';
+  if(right!==undefined) c.style.right = right+'px';
+  if(left!==undefined) c.style.left = left+'px';
+  drawSprite(c, map, scale||2);
+  return c;
 }
+
+// ─────────────────────────────────────────────
+// STARS
+// ─────────────────────────────────────────────
+function drawStars() {
+  var sc = document.getElementById('starCanvas');
+  var ctx = sc.getContext('2d');
+  sc.width = 520; sc.height = 160;
+  ctx.clearRect(0,0,520,160);
+  var stars = [];
+  for(var i=0;i<60;i++){
+    stars.push({x:Math.random()*520, y:Math.random()*140, r:Math.random()<0.2?1.5:1});
+  }
+  stars.forEach(function(s){
+    ctx.fillStyle = 'rgba(255,255,220,'+(0.5+Math.random()*0.5)+')';
+    ctx.fillRect(s.x,s.y,s.r,s.r);
+  });
+}
+drawStars();
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+var scene = document.getElementById('scene');
+var statusText = document.getElementById('statusText');
+var win = document.getElementById('win');
+var adventureStarted = false;
+var currentHP = 10;
+var score = 0;
+
+function setStatus(t){ statusText.textContent = t; }
+
+function showBubble(text, x, y) {
+  var b = document.createElement('div');
+  b.className = 'bubble';
+  b.textContent = text;
+  b.style.left = x+'px';
+  b.style.bottom = y+'px';
+  scene.appendChild(b);
+  return b;
+}
+
+function removeBubble(b){if(b&&b.parentNode)b.parentNode.removeChild(b);}
+
+function shakeWin(){ win.classList.remove('shake'); void win.offsetWidth; win.classList.add('shake'); }
+
+function flashScene(){
+  scene.classList.remove('red-flash'); void scene.offsetWidth;
+  scene.classList.add('red-flash');
+  setTimeout(function(){ scene.classList.remove('red-flash'); },300);
+}
+
+function loseHP(n) {
+  currentHP = Math.max(0, currentHP - n);
+  var hearts = document.querySelectorAll('.heart');
+  for(var i=hearts.length-1;i>=0;i--){
+    if(i >= currentHP && !hearts[i].classList.contains('lost')){
+      hearts[i].classList.add('lost');
+    }
+  }
+  // low HP pulse
+  if(currentHP <= 3){
+    hearts.forEach(function(h){ if(!h.classList.contains('lost')) h.classList.add('hp-low'); });
+  }
+  shakeWin();
+  flashScene();
+  updateXP();
+}
+
+function updateXP(){
+  var xp = document.getElementById('xpBar');
+  xp.style.width = Math.max(0, (currentHP/10)*100)+'%';
+  if(currentHP<=3) xp.style.background='#ff4444';
+  else if(currentHP<=6) xp.style.background='#ffaa00';
+  else xp.style.background='#4fe04f';
+}
+
+function spawnParticles(ox, oy, colors, count){
+  count = count||12;
+  for(var i=0;i<count;i++){
+    (function(){
+      var p=document.createElement('div');
+      p.className='particle';
+      p.style.background=colors[Math.floor(Math.random()*colors.length)];
+      var px=ox+(Math.random()-0.5)*50;
+      var py=oy;
+      var vx=(Math.random()-0.5)*6;
+      var vy=-(Math.random()*5+2);
+      var op=1;
+      p.style.left=px+'px'; p.style.top=py+'px';
+      scene.appendChild(p);
+      var t=setInterval(function(){
+        vy+=0.35; px+=vx; py+=vy; op-=0.04;
+        p.style.left=px+'px'; p.style.top=py+'px'; p.style.opacity=op;
+        if(op<=0){clearInterval(t);if(p.parentNode)p.parentNode.removeChild(p);}
+      },20);
+    })();
+  }
+}
+
+function showExplosion(x, y){
+  var e=document.createElement('div');
+  e.className='explosion';
+  e.style.left=(x-30)+'px'; e.style.top=(y-30)+'px';
+  e.style.width='60px'; e.style.height='60px';
+  e.style.background='radial-gradient(circle,'+EXY+','+EXO+','+EXR+',transparent)';
+  scene.appendChild(e);
+  spawnParticles(x,y,[EXY,EXO,EXR,CG],20);
+  setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},700);
+}
+
+function moveCharTo(el, targetLeft, duration, cb){
+  var start = parseFloat(el.style.left)||0;
+  var dist = targetLeft - start;
+  var startTime = null;
+  function step(ts){
+    if(!startTime) startTime=ts;
+    var prog=Math.min((ts-startTime)/duration,1);
+    // ease
+    var ease=prog<0.5?2*prog*prog:-1+(4-2*prog)*prog;
+    el.style.left=(start+dist*ease)+'px';
+    if(prog<1) requestAnimationFrame(step);
+    else if(cb) cb();
+  }
+  requestAnimationFrame(step);
+}
+
+function wait(ms){ return new Promise(function(r){setTimeout(r,ms);}); }
+
+function delay(ms, fn){ setTimeout(fn, ms); }
+
+// ─────────────────────────────────────────────
+// DEATH SCREEN
+// ─────────────────────────────────────────────
+function showDeathScreen(killer) {
+  document.getElementById('deathMsg').textContent = 'Killed by '+killer;
+  document.getElementById('deathScore').textContent = 'Score: '+score+' pts';
+  var overlay = document.getElementById('deathOverlay');
+  overlay.style.display = 'flex';
+  document.getElementById('resetBtn').style.display = 'block';
+}
+
+// ─────────────────────────────────────────────
+// THE ADVENTURE — sequential cinematic scenes
+// ─────────────────────────────────────────────
+function startAdventure() {
+  if(adventureStarted) return;
+  adventureStarted = true;
+  document.getElementById('hint').style.display='none';
+  scene.onclick = null;
+
+  // Place Steve
+  var steve = makeChar(STEVE, 2, 80, undefined, 200);
+  steve.id = 'steveEl';
+  scene.appendChild(steve);
+
+  runScene1_Walking(steve);
+}
+
+// ── Scene 1: Steve walks forward ──
+function runScene1_Walking(steve) {
+  setStatus('🌙 Steve sets out into the night...');
+  var x = 200;
+  steve.style.left = x+'px';
+
+  var b = showBubble("nice night for mining!", 180, 148);
+  delay(2000, function(){
+    removeBubble(b);
+    // Walk right
+    var walk = setInterval(function(){
+      x += 1.5;
+      steve.style.left = x+'px';
+      // bob
+      steve.style.bottom = (80 + Math.abs(Math.sin(x/8))*4)+'px';
+      if(x > 280){ clearInterval(walk); runScene2_Zombie(steve); }
+    },20);
+  });
+}
+
+// ── Scene 2: Zombie attacks ──
+function runScene2_Zombie(steve) {
+  setStatus('🧟 A zombie emerges from the shadows!');
+
+  var zombie = makeChar(ZOMBIE, 2, 80, undefined, -40);
+  zombie.style.left = '-40px';
+  scene.appendChild(zombie);
+
+  var b = showBubble("BRAAAINS", 20, 148);
+
+  // Zombie walks toward Steve
+  var zx = -40;
+  var sx = parseFloat(steve.style.left);
+
+  // Steve runs left a bit
+  var steveRunning = setInterval(function(){
+    sx -= 1;
+    steve.style.left = sx+'px';
+  },30);
+
+  var zWalk = setInterval(function(){
+    zx += 1.8;
+    zombie.style.left = zx+'px';
+    zombie.style.bottom = (80+Math.abs(Math.sin(zx/8))*3)+'px';
+    if(zx > 160){
+      clearInterval(zWalk);
+      clearInterval(steveRunning);
+      removeBubble(b);
+
+      // Zombie hits Steve 3 times
+      var hits = 0;
+      var hitInterval = setInterval(function(){
+        hits++;
+        loseHP(1);
+        // Steve flash
+        steve.style.opacity='0.3';
+        delay(100, function(){ steve.style.opacity='1'; });
+        setStatus('🧟 Zombie attack! Ouch! (hit '+hits+'/3)');
+        score += 10;
+
+        if(hits>=3){
+          clearInterval(hitInterval);
+          setStatus('⚔️ Steve fights back! Zombie defeated!');
+          // Zombie death
+          var b2 = showBubble("ugh...", 100, 148);
+          delay(400, function(){
+            spawnParticles(zx+16, 100, [ZS,ZH,ZC],14);
+            zombie.style.opacity='0';
+            removeBubble(b2);
+            delay(500, function(){
+              if(zombie.parentNode) zombie.parentNode.removeChild(zombie);
+              score += 50;
+              updateXP();
+              delay(800, function(){ runScene3_Creeper(steve); });
+            });
+          });
+        }
+      },600);
+    }
+  },20);
+}
+
+// ── Scene 3: Creeper approaches ──
+function runScene3_Creeper(steve) {
+  setStatus('💚 Something green is approaching from the right...');
+  var cx = 520;
+  var creeper = makeChar(CREEPER, 2, 80, undefined, cx);
+  creeper.style.left = cx+'px';
+  scene.appendChild(creeper);
+
+  // Steve is around x=160, walks right again
+  var sx = parseFloat(steve.style.left);
+  var steveWalk = setInterval(function(){
+    sx += 1.2;
+    steve.style.left = sx+'px';
+    steve.style.bottom=(80+Math.abs(Math.sin(sx/8))*3)+'px';
+  },30);
+
+  var cWalk = setInterval(function(){
+    cx -= 1.5;
+    creeper.style.left = cx+'px';
+    if(cx < 340){
+      clearInterval(cWalk);
+      clearInterval(steveWalk);
+
+      // Steve notices
+      var b = showBubble("wait... is that a-", sx-20, 148);
+      delay(800, function(){
+        removeBubble(b);
+        setStatus('💚 Creeper: Ssssssss...');
+        var b2 = showBubble("Sssssss...", cx-20, 148);
+
+        // Creeper blinks (flash white) then EXPLODES
+        var blinks = 0;
+        var blinkInterval = setInterval(function(){
+          blinks++;
+          creeper.style.filter = blinks%2===0?'brightness(1)':'brightness(5)';
+          if(blinks>=8){
+            clearInterval(blinkInterval);
+            removeBubble(b2);
+            creeper.style.filter='';
+
+            // BOOM
+            var cRect = creeper.getBoundingClientRect();
+            var sRect = scene.getBoundingClientRect();
+            var boomX = cx+16;
+            var boomY = 80;
+            showExplosion(boomX, boomY-20);
+            setStatus('💥 BOOM! Creeper exploded!!!');
+
+            loseHP(3);
+            if(creeper.parentNode) creeper.parentNode.removeChild(creeper);
+
+            // Steve blown back
+            var b3 = showBubble("AAARGH!", sx-20, 148);
+            var vel = -8;
+            var steveY = 80;
+            var flying = setInterval(function(){
+              vel += 0.5;
+              sx -= 2;
+              steveY -= vel;
+              steve.style.left = sx+'px';
+              steve.style.bottom = Math.max(80,steveY)+'px';
+              steve.style.transform='rotate('+(sx*2)+'deg)';
+              if(steveY<=80 && vel>0){
+                clearInterval(flying);
+                steve.style.transform='';
+                steve.style.bottom='80px';
+                removeBubble(b3);
+                score += 100;
+
+                delay(1000, function(){
+                  if(currentHP<=0){ showDeathScreen('a Creeper'); return; }
+                  runScene4_Skeleton(steve);
+                });
+              }
+            },20);
+          }
+        },150);
+      });
+    }
+  },20);
+}
+
+// ── Scene 4: Skeleton shoots arrows ──
+function runScene4_Skeleton(steve) {
+  setStatus('💀 A skeleton spotted Steve!');
+
+  var skeleton = makeChar(SKELETON, 2, 80, undefined, -40);
+  skeleton.style.left = '-40px';
+  scene.appendChild(skeleton);
+
+  var b = showBubble("rattle rattle", 10, 148);
+
+  var skx = -40;
+  var skWalk = setInterval(function(){
+    skx += 2;
+    skeleton.style.left = skx+'px';
+    skeleton.style.bottom=(80+Math.abs(Math.sin(skx/7))*3)+'px';
+    if(skx > 60){
+      clearInterval(skWalk);
+      removeBubble(b);
+      // Skeleton fires arrows!
+      var arrowsFired = 0;
+      setStatus('🏹 Skeleton is shooting arrows at Steve!');
+
+      var fireInterval = setInterval(function(){
+        arrowsFired++;
+        fireArrow(skeleton, steve, arrowsFired);
+        if(arrowsFired>=4){
+          clearInterval(fireInterval);
+          delay(1800, function(){
+            // Steve counterattacks
+            setStatus('⚔️ Steve charges with his sword!');
+            var sx = parseFloat(steve.style.left);
+            var charge = setInterval(function(){
+              sx -= 2;
+              steve.style.left = sx+'px';
+              if(sx < skx+50){
+                clearInterval(charge);
+                // Hit skeleton
+                loseHP(1); // skeleton gets the last shot
+                spawnParticles(skx+16, 100, [SS,SB,'#fff'],16);
+                skeleton.style.opacity='0';
+                delay(400,function(){
+                  if(skeleton.parentNode) skeleton.parentNode.removeChild(skeleton);
+                  score+=80;
+                  delay(700, function(){
+                    if(currentHP<=0){ showDeathScreen('a Skeleton'); return; }
+                    runScene5_Enderman(steve);
+                  });
+                });
+              }
+            },20);
+          });
+        }
+      }, 900);
+    }
+  },20);
+}
+
+function fireArrow(skeleton, steve, num) {
+  var arrow = document.createElement('div');
+  arrow.style.cssText='position:absolute;width:12px;height:3px;background:#8B6340;z-index:30;image-rendering:pixelated;';
+  var skx = parseFloat(skeleton.style.left);
+  var sx = parseFloat(steve.style.left);
+  var startX = skx + 32;
+  var startY = 160; // from bottom of scene
+  arrow.style.left = startX+'px';
+  arrow.style.bottom = '120px';
+  scene.appendChild(arrow);
+
+  var ax = startX;
+  var targetX = sx + 8;
+  var speed = 5;
+  var miss = (num%3===0); // every 3rd arrow misses
+
+  var t = setInterval(function(){
+    ax += speed;
+    arrow.style.left=ax+'px';
+    if(!miss) arrow.style.bottom=(120 - Math.sin((ax-startX)/60)*20)+'px';
+    else arrow.style.bottom=(120 + (ax-startX)/10)+'px'; // flies over
+
+    if(ax > targetX+50 || ax > 520){
+      clearInterval(t);
+      if(arrow.parentNode) arrow.parentNode.removeChild(arrow);
+      if(!miss){
+        loseHP(1);
+        setStatus('🏹 Arrow hit Steve! ('+num+'/4)');
+      } else {
+        setStatus('🏹 Arrow '+num+' missed!');
+      }
+    }
+  },20);
+}
+
+// ── Scene 5: Enderman teleports ──
+function runScene5_Enderman(steve) {
+  setStatus('👁️ You feel watched... the darkness shifts...');
+  score += 80;
+
+  // Dramatic pause with purple particle effects
+  delay(1200, function(){
+    // Enderman appears via teleport particles
+    var ex = 340;
+    spawnParticles(ex+16, 120, [ENE,'#aa00aa','#660066'],20);
+
+    delay(400, function(){
+      var enderman = makeChar(ENDERMAN, 2, 80, undefined, ex);
+      enderman.style.left = ex+'px';
+      enderman.style.filter='drop-shadow(0 0 8px #aa00aa)';
+      scene.appendChild(enderman);
+
+      setStatus('👁️ ENDERMAN! DO NOT make eye contact!');
+      var b = showBubble("👁️👁️", ex, 148);
+
+      delay(1000, function(){
+        removeBubble(b);
+        // Enderman teleports closer 3 times
+        var teleports = 0;
+        function teleport(){
+          teleports++;
+          spawnParticles(ex+16, 120, [ENE,'#cc00cc'],10);
+          enderman.style.opacity='0';
+          delay(200, function(){
+            ex -= 80;
+            enderman.style.left=ex+'px';
+            enderman.style.opacity='1';
+            spawnParticles(ex+16, 120, [ENE,'#cc00cc'],10);
+
+            if(ex > 200 && teleports < 3){
+              loseHP(1);
+              setStatus('💜 Enderman teleports closer! ('+teleports+'/3)');
+              delay(700, teleport);
+            } else {
+              // Final confrontation
+              loseHP(2);
+              setStatus('💜 Enderman SCREAMS and attacks!');
+              var sb = showBubble('☠️ SCREEE', ex, 148);
+
+              delay(600, function(){
+                removeBubble(sb);
+                // Steve throws water bucket (weakness!)
+                setStatus('💧 Steve splashes water! Enderman retreats!');
+                var water = showBubble("HAVE SOME WATER >:)", parseFloat(steve.style.left)-20, 148);
+                spawnParticles(ex+16, 80, ['#00aaff','#0066ff','#00ffff'],20);
+                enderman.style.filter='';
+                var ev = 6;
+                var moveAway = setInterval(function(){
+                  ex+=ev; ev+=0.2;
+                  enderman.style.left=ex+'px';
+                  enderman.style.opacity = Math.max(0, 1-(ex-300)/150);
+                  if(ex > 540){
+                    clearInterval(moveAway);
+                    if(enderman.parentNode) enderman.parentNode.removeChild(enderman);
+                    removeBubble(water);
+                    score+=120;
+                    delay(800, function(){
+                      if(currentHP<=0){ showDeathScreen('an Enderman'); return; }
+                      runScene6_FinalBoss(steve);
+                    });
+                  }
+                },20);
+              });
+            }
+          });
+        }
+        delay(600, teleport);
+      });
+    });
+  });
+}
+
+// ── Scene 6: FINAL — Mining down, lava, all mobs rush ──
+function runScene6_FinalBoss(steve) {
+  setStatus('⛏️ Steve thinks: "I survived! Time to mine..."');
+  score += 100;
+  var b = showBubble("surely mining straight down\nis a good idea", parseFloat(steve.style.left)-20, 148);
+
+  delay(2000, function(){
+    removeBubble(b);
+    setStatus('⛏️ Steve mines straight down...');
+    // Steve drops
+    var sy = 80;
+    var vel = 0;
+    var sx = parseFloat(steve.style.left);
+    steve.style.bottom=sy+'px';
+
+    var dropIn = setInterval(function(){
+      vel+=0.6; sy-=vel;
+      steve.style.bottom=sy+'px';
+      steve.style.transform='rotate('+(vel*5)+'deg)';
+      if(sy < -64){
+        clearInterval(dropIn);
+        steve.style.display='none';
+        delay(500, function(){ runScene7_Underground(steve); });
+      }
+    },20);
+  });
+}
+
+function runScene7_Underground(steve) {
+  // Change sky to cave
+  scene.style.background='linear-gradient(to bottom,#111 0%,#1a0a00 60%,#330800 100%)';
+  document.querySelector('.grass-layer').style.background='#2d1a0a';
+  document.querySelector('.ground').style.background='#1a0800';
+  document.querySelector('.moon').style.display='none';
+
+  setStatus('🌋 Underground! Lava everywhere!');
+
+  // Lava glow at bottom
+  var lava = document.createElement('div');
+  lava.style.cssText='position:absolute;bottom:0;left:0;width:100%;height:40px;background:linear-gradient(to top,#ff4400,#ff8800);opacity:0.8;z-index:5;';
+  scene.appendChild(lava);
+
+  // Reset Steve position underground
+  steve.style.display='block';
+  steve.style.left='260px';
+  steve.style.bottom='80px';
+  steve.style.transform='';
+
+  var b = showBubble("oh no", 240, 148);
+  delay(800, function(){
+    removeBubble(b);
+    // ALL mobs appear
+    setStatus('💀🧟💚👁️ ALL MOBS RUSH AT ONCE!!!');
+
+    var z2 = makeChar(ZOMBIE, 2, 80, undefined, -30);
+    var sk2 = makeChar(SKELETON, 2, 80, undefined, -70);
+    var cr2 = makeChar(CREEPER, 2, 80, undefined, 520);
+    var en2 = makeChar(ENDERMAN, 2, 80, undefined, 500);
+    z2.style.left='-30px'; sk2.style.left='-70px';
+    cr2.style.left='520px'; en2.style.left='500px';
+    scene.appendChild(z2); scene.appendChild(sk2);
+    scene.appendChild(cr2); scene.appendChild(en2);
+
+    // Rush animation
+    var frames=0;
+    var steveX=260;
+    var rush = setInterval(function(){
+      frames++;
+      var z2x=parseFloat(z2.style.left)+2.5;
+      var sk2x=parseFloat(sk2.style.left)+2;
+      var cr2x=parseFloat(cr2.style.left)-2.2;
+      var en2x=parseFloat(en2.style.left)-1.8;
+      z2.style.left=z2x+'px';
+      sk2.style.left=sk2x+'px';
+      cr2.style.left=cr2x+'px';
+      en2.style.left=en2x+'px';
+
+      // Steve panics
+      steveX += Math.sin(frames/5)*2;
+      steve.style.left=steveX+'px';
+
+      // Hit moments
+      if(frames===40){ loseHP(1); setStatus('🧟 Zombie grabs Steve!'); }
+      if(frames===60){ loseHP(1); setStatus('💀 Skeleton arrow hits!'); }
+      if(frames===75){ loseHP(1); setStatus('👁️ Enderman strikes!'); }
+      if(frames===90){
+        loseHP(1);
+        // Creeper explodes
+        showExplosion(steveX, 100);
+        setStatus('💥 CREEPER EXPLODES IN THE CAVE!!!');
+      }
+
+      if(frames>=100){
+        clearInterval(rush);
+
+        if(currentHP > 0){
+          // Steve survives somehow
+          loseHP(currentHP); // kill remaining HP
+        }
+
+        delay(600, function(){
+          // Dramatic slow death
+          steve.style.transition='all 0.8s ease';
+          steve.style.opacity='0.4';
+          steve.style.transform='rotate(90deg)';
+          steve.style.bottom='55px';
+
+          setStatus('☠️ Steve has perished... into the lava');
+          delay(1000, function(){
+            showDeathScreen('a mob swarm + lava + their own bad decisions');
+          });
+        });
+      }
+    },30);
+  });
+}
+
+// ─────────────────────────────────────────────
+// RESET
+// ─────────────────────────────────────────────
+function resetAll() {
+  adventureStarted = false;
+  currentHP = 10;
+  score = 0;
+
+  // Reset scene
+  scene.style.background='linear-gradient(to bottom,#1a0a2e 0%,#2a0a4e 40%,#1a0a2e 100%)';
+  var grassLayer = document.querySelector('.grass-layer');
+  if(grassLayer) grassLayer.style.background='#3a7a28';
+  var groundEl = document.querySelector('.ground');
+  if(groundEl) groundEl.style.background='#2d1a0a';
+  var moonEl = document.querySelector('.moon');
+  if(moonEl) moonEl.style.display='';
+
+  // Remove all dynamic elements
+  var toRemove = scene.querySelectorAll('canvas.char, .bubble, .explosion, .particle, div[style*="lava"], div[style*="linear-gradient"]');
+  toRemove.forEach(function(e){ e.remove(); });
+
+  // Remove extra canvases/divs added in underground scene
+  var lavaEl = scene.querySelector('div');
+  // clear scene of dynamics safely
+  var children = Array.from(scene.children);
+  children.forEach(function(c){
+    if(c.tagName==='CANVAS'&&c.className==='char') c.remove();
+    if(c.style&&c.style.background&&c.style.background.indexOf('ff4400')>=0) c.remove();
+  });
+
+  // Reset hearts
+  document.querySelectorAll('.heart').forEach(function(h){
+    h.classList.remove('lost','hp-low');
+  });
+
+  // Reset XP bar
+  var xp=document.getElementById('xpBar');
+  xp.style.width='100%';
+  xp.style.background='#4fe04f';
+
+  // Hide death overlay
+  document.getElementById('deathOverlay').style.display='none';
+
+  // Reset buttons
+  document.getElementById('resetBtn').style.display='none';
+  setStatus('▶ Click the scene to begin again...');
+
+  // Hint
+  document.getElementById('hint').style.display='block';
+
+  // Re-enable click
+  scene.onclick = startAdventure;
+  win.classList.remove('shake');
+  drawStars();
+}
+
+// initial click binding
+scene.onclick = startAdventure;
 </script>
-
 </body>
 </html>
