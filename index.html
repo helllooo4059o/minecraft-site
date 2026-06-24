@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Profile - Steve</title>
+<title>Minecraft Profile - Steve's Last Stand</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  background:#0a0a1a;
+  background:#050510;
   font-family:'Press Start 2P',monospace;
   display:flex;justify-content:center;align-items:flex-start;
   min-height:100vh;color:#fff;padding:20px 0;
 }
 .window{
-  width:520px;
-  background:#111;
+  width:540px;
+  background:#0d0d0d;
   border:4px solid #3aa655;
-  box-shadow:0 0 0 2px #111,0 0 0 4px #3aa655,0 0 60px rgba(58,166,85,0.25);
+  box-shadow:0 0 0 2px #0d0d0d,0 0 0 4px #3aa655,0 0 80px rgba(58,166,85,0.2);
   position:relative;overflow:hidden;
 }
 .title-bar{
@@ -26,197 +26,252 @@ body{
   font-size:10px;letter-spacing:1px;color:#000;
 }
 .dots{display:flex;gap:5px;}
-.dot{width:10px;height:10px;border:2px solid #000;background:#111;display:inline-block;}
+.dot{width:10px;height:10px;border:2px solid #000;background:#0d0d0d;display:inline-block;}
 
 /* SCENE */
 .scene{
-  position:relative;height:280px;overflow:hidden;
-  background:linear-gradient(to bottom,#1a0a2e 0%,#2a0a4e 40%,#1a0a2e 100%);
-  border-bottom:3px solid #3aa655;
+  position:relative;height:300px;overflow:hidden;
   cursor:pointer;user-select:none;
+  transition:background 1.5s ease;
 }
-/* Stars */
-.stars{position:absolute;top:0;left:0;width:100%;height:55%;pointer-events:none;}
-/* Moon */
-.moon{
-  position:absolute;top:14px;right:50px;
-  width:28px;height:28px;background:#ffffcc;
-  box-shadow:0 0 12px #ffffaa;
-  clip-path:polygon(30% 0%,100% 0%,100% 100%,30% 100%,0% 50%);
+.scene-bg{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  transition:opacity 1s ease;
+  pointer-events:none;
 }
-/* Ground layers */
-.ground{
-  position:absolute;bottom:0;left:0;width:100%;height:80px;
-  background:#2d1a0a;
-}
-.grass-layer{
-  position:absolute;bottom:80px;left:0;width:100%;height:16px;
-  background:#3a7a28;
-}
-/* Torch glow */
-.torch-glow{
-  position:absolute;bottom:80px;
-  width:6px;height:16px;background:#ff8800;
-  box-shadow:0 0 12px 6px rgba(255,140,0,0.5);
-}
-/* Trees */
-.tree{position:absolute;bottom:96px;}
-.tree-trunk{width:8px;height:24px;background:#4a2e0a;margin:0 auto;}
-.tree-leaves{width:32px;height:32px;background:#1a5a10;margin:-8px auto 0;border:2px solid #0a3a08;}
 
-/* Characters - all pixel canvas based */
+/* Ground */
+.ground-wrap{position:absolute;bottom:0;left:0;width:100%;pointer-events:none;}
+.grass{height:18px;background:#3a7a28;position:relative;}
+.grass::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:#4a9a38;}
+.dirt{height:70px;background:#5c3d1a;}
+.dirt::after{
+  content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 16px,rgba(0,0,0,0.15) 16px,rgba(0,0,0,0.15) 17px),
+             repeating-linear-gradient(90deg,transparent,transparent 16px,rgba(0,0,0,0.1) 16px,rgba(0,0,0,0.1) 17px);
+  position:relative;
+}
+
+/* Characters */
 .char{
   position:absolute;
   image-rendering:pixelated;
-  bottom:80px;
+  bottom:88px;
 }
 
-/* Click hint */
+/* Hint */
 .hint{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-size:7px;color:rgba(255,255,255,0.6);text-align:center;
-  line-height:2;pointer-events:none;
-  text-shadow:1px 1px 0 #000;
+  position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);
+  font-size:7px;color:rgba(255,255,255,0.75);text-align:center;
+  line-height:2.2;pointer-events:none;
+  text-shadow:2px 2px 0 #000;
+  animation:hintPulse 1.5s ease infinite;
 }
-
-/* Damage flash */
-@keyframes dmgFlash{0%{opacity:1}50%{opacity:0.2}100%{opacity:1}}
-.dmg{animation:dmgFlash 0.2s ease 3;}
+@keyframes hintPulse{0%,100%{opacity:0.75}50%{opacity:0.3}}
 
 /* Chat bubble */
 .bubble{
-  position:absolute;background:#000;border:2px solid #3aa655;
-  padding:4px 6px;font-size:6px;color:#3af055;
+  position:absolute;background:#000;border:2px solid #55ff55;
+  padding:5px 7px;font-size:6px;color:#55ff55;
   pointer-events:none;white-space:nowrap;z-index:50;
-  line-height:1.6;
+  line-height:1.8;max-width:160px;white-space:normal;
+  word-break:break-word;text-align:center;
 }
-.bubble::after{
+.bubble.right::after{
+  content:'';position:absolute;bottom:-8px;right:10px;
+  border:4px solid transparent;border-top-color:#55ff55;
+}
+.bubble.left::after{
   content:'';position:absolute;bottom:-8px;left:10px;
-  border:4px solid transparent;border-top-color:#3aa655;
+  border:4px solid transparent;border-top-color:#55ff55;
 }
-
-/* Explosions */
-@keyframes explode{
-  0%{transform:scale(0.5);opacity:1;}
-  60%{transform:scale(1.4);opacity:0.8;}
-  100%{transform:scale(2);opacity:0;}
-}
-.explosion{
-  position:absolute;z-index:40;pointer-events:none;
-  animation:explode 0.6s ease-out forwards;
-}
-
-/* Health bar */
-@keyframes hpPulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.hp-low{animation:hpPulse 0.5s ease infinite;}
-
-/* Screen effects */
-@keyframes redFlash{0%,100%{background:transparent}50%{background:rgba(200,0,0,0.3)}}
-.red-flash{animation:redFlash 0.3s ease;}
-
-/* Shake */
-@keyframes shake{
-  0%{transform:translate(0,0);}
-  15%{transform:translate(-8px,3px);}
-  30%{transform:translate(8px,-3px);}
-  45%{transform:translate(-6px,2px);}
-  60%{transform:translate(6px,-2px);}
-  75%{transform:translate(-3px,1px);}
-  100%{transform:translate(0,0);}
-}
-.shake{animation:shake 0.5s ease;}
+.bubble.enemy{border-color:#ff5555;color:#ff5555;}
+.bubble.enemy.left::after{border-top-color:#ff5555;}
+.bubble.enemy.right::after{border-top-color:#ff5555;}
 
 /* XP bar */
-.xp-bar-wrap{
-  height:6px;background:#222;border:1px solid #3aa655;margin-top:6px;
-}
-.xp-bar-fill{
-  height:100%;background:#4fe04f;transition:width 0.3s ease;width:60%;
-}
+.xp-row{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.xp-label{font-size:6px;color:#4fe04f;white-space:nowrap;}
+.xp-bar-wrap{flex:1;height:7px;background:#1a1a1a;border:1px solid #3aa655;}
+.xp-bar-fill{height:100%;background:#4fe04f;transition:width 0.4s ease,background 0.3s;}
+.xp-num{font-size:6px;color:#ffff55;white-space:nowrap;}
 
-/* Panels */
+/* Hearts */
+.hearts-row{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:7px;}
+.heart{font-size:12px;transition:all 0.15s;display:inline-block;}
+.heart.lost{opacity:0.1;filter:grayscale(1) brightness(0.5);transform:scale(0.8);}
+@keyframes heartPop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+.heart.pop{animation:heartPop 0.3s ease;}
+
+/* Status */
+.status-bar{
+  margin-top:7px;background:#111;border:2px solid #3aa655;
+  padding:8px 10px;font-size:7px;text-align:center;color:#3aa655;
+  min-height:34px;display:flex;align-items:center;justify-content:center;
+  gap:6px;line-height:1.6;transition:color 0.3s;
+}
+.status-bar.danger{color:#ff5555;border-color:#ff5555;}
+.status-bar.warning{color:#ffaa00;border-color:#ffaa00;}
+
+/* Info grid */
 .info-panel{padding:12px;}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
 .slot{
-  background:#1a1a1a;border:2px solid #3aa655;
-  padding:8px 6px;font-size:7px;line-height:1.8;color:#c8ffc8;
+  background:#111;border:2px solid #3aa655;
+  padding:8px 7px;font-size:7px;line-height:1.8;color:#c8ffc8;
 }
 .slot .lbl{color:#3aa655;font-size:6px;display:block;margin-bottom:3px;}
 .full{grid-column:span 2;}
-.status-bar{
-  margin-top:6px;background:#1a1a1a;border:2px solid #3aa655;
-  padding:8px 10px;font-size:7px;text-align:center;color:#3aa655;
-  min-height:32px;display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.hearts{display:flex;gap:3px;justify-content:center;margin-top:8px;}
-.heart{font-size:13px;transition:all 0.15s;}
-.heart.lost{opacity:0.12;filter:grayscale(1);}
-.footer{margin-top:6px;text-align:center;font-size:6px;opacity:0.4;padding-bottom:4px;}
-.reset-btn{
-  display:none;margin-top:6px;width:100%;
-  background:#3aa655;border:none;color:#000;
-  font-family:'Press Start 2P',monospace;font-size:7px;padding:9px;
-  cursor:pointer;letter-spacing:1px;
-}
-.reset-btn:hover{background:#4dcc6a;}
 
-/* Death screen overlay */
+/* Death screen */
 .death-overlay{
   display:none;position:absolute;top:0;left:0;width:100%;height:100%;
-  background:rgba(100,0,0,0.7);z-index:100;
-  flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:rgba(80,0,0,0.85);z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  animation:deathFade 0.8s ease;
 }
-.death-title{font-size:16px;color:#ff4444;text-shadow:2px 2px #000;letter-spacing:2px;}
-.death-sub{font-size:7px;color:#ffaaaa;text-align:center;line-height:2;}
-.death-score{font-size:7px;color:#ffff88;margin-top:4px;}
+@keyframes deathFade{from{opacity:0}to{opacity:1}}
+.death-title{font-size:20px;color:#ff3333;text-shadow:3px 3px #000,0 0 20px #ff0000;letter-spacing:3px;}
+.death-sub{font-size:7px;color:#ffcccc;text-align:center;line-height:2.2;margin-top:4px;}
+.death-score{font-size:7px;color:#ffff88;margin-top:6px;}
+.death-tip{font-size:6px;color:#aaaaaa;margin-top:4px;font-style:italic;text-align:center;max-width:300px;line-height:1.8;}
+
+/* Reset button */
+.reset-btn{
+  display:none;margin-top:8px;width:100%;
+  background:#3aa655;border:none;color:#000;
+  font-family:'Press Start 2P',monospace;font-size:7px;padding:10px;
+  cursor:pointer;letter-spacing:1px;
+  transition:background 0.2s,transform 0.1s;
+}
+.reset-btn:hover{background:#4dcc6a;}
+.reset-btn:active{transform:scale(0.98);}
+
+/* Death selector */
+.death-selector{
+  display:none;margin-top:8px;
+  background:#111;border:2px solid #3aa655;padding:10px;
+}
+.death-selector-title{font-size:7px;color:#3aa655;text-align:center;margin-bottom:8px;}
+.death-btns{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.death-btn{
+  background:#1a1a1a;border:2px solid #555;color:#aaa;
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  padding:6px 4px;cursor:pointer;text-align:center;line-height:1.6;
+  transition:all 0.2s;
+}
+.death-btn:hover{border-color:#3aa655;color:#fff;background:#222;}
+
+/* Footer */
+.footer{margin-top:8px;text-align:center;font-size:6px;opacity:0.4;padding-bottom:4px;}
+
+/* Screen flash overlay */
+.flash-overlay{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:150;opacity:0;
+  transition:opacity 0.05s;
+}
+
+/* Animations */
+@keyframes shake{
+  0%{transform:translate(0,0) rotate(0deg);}
+  10%{transform:translate(-8px,3px) rotate(-1deg);}
+  20%{transform:translate(8px,-3px) rotate(1deg);}
+  30%{transform:translate(-7px,2px) rotate(-0.7deg);}
+  40%{transform:translate(7px,-2px) rotate(0.7deg);}
+  50%{transform:translate(-5px,1px) rotate(-0.4deg);}
+  60%{transform:translate(5px,-1px) rotate(0.4deg);}
+  70%{transform:translate(-3px,0px);}
+  80%{transform:translate(3px,0px);}
+  100%{transform:translate(0,0) rotate(0deg);}
+}
+.shake{animation:shake 0.55s ease;}
+
+@keyframes floatUp{
+  0%{transform:translateY(0);opacity:1;}
+  100%{transform:translateY(-30px);opacity:0;}
+}
+.dmg-num{
+  position:absolute;z-index:60;pointer-events:none;
+  font-size:8px;color:#ff4444;text-shadow:1px 1px #000;
+  animation:floatUp 1s ease forwards;
+}
+
+/* Lava */
+.lava{
+  position:absolute;bottom:0;left:0;width:100%;height:32px;
+  background:linear-gradient(to top,#ff2200,#ff6600,#ffaa00);
+  pointer-events:none;
+}
+@keyframes lavaFlow{
+  0%,100%{filter:brightness(1);}
+  50%{filter:brightness(1.3);}
+}
+.lava{animation:lavaFlow 1s ease infinite;}
+
+/* Rain/particles */
+.particle{
+  position:absolute;pointer-events:none;z-index:55;
+  image-rendering:pixelated;
+}
+
+/* Arrow */
+.arrow{
+  position:absolute;z-index:40;pointer-events:none;
+  width:14px;height:4px;background:#8B5E2A;
+  image-rendering:pixelated;
+}
+.arrow::before{
+  content:'';position:absolute;right:-4px;top:-3px;
+  border:5px solid transparent;border-left-color:#8B5E2A;
+}
+.arrow::after{
+  content:'';position:absolute;left:0;top:-4px;
+  width:4px;height:12px;background:#cccccc;opacity:0.6;
+  transform:rotate(45deg);transform-origin:0 0;
+}
+
+/* Fireball */
+.fireball{
+  position:absolute;z-index:40;pointer-events:none;
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(#ffff00,#ff8800,#ff2200);
+  box-shadow:0 0 8px #ff6600;
+}
 </style>
 </head>
 <body>
 <div class="window" id="win">
   <div class="title-bar">
     <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    ⛏ MINECRAFT PROFILE
+    ⛏ MINECRAFT PROFILE — STEVE'S LAST STAND
   </div>
 
-  <div class="scene" id="scene" onclick="startAdventure()">
-    <!-- Stars drawn by JS -->
-    <canvas class="stars" id="starCanvas"></canvas>
-    <div class="moon"></div>
+  <div class="scene" id="scene">
+    <canvas id="bgCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+    <div class="flash-overlay" id="flashOverlay"></div>
 
-    <!-- Trees -->
-    <div class="tree" style="left:20px">
-      <div class="tree-leaves"></div><div class="tree-trunk"></div>
-    </div>
-    <div class="tree" style="left:60px;bottom:88px">
-      <div class="tree-leaves" style="width:24px;height:24px"></div>
-      <div class="tree-trunk" style="height:16px"></div>
-    </div>
-    <div class="tree" style="right:30px;bottom:80px">
-      <div class="tree-leaves"></div><div class="tree-trunk"></div>
+    <div class="ground-wrap" id="groundWrap">
+      <div class="grass" id="grassEl"></div>
+      <div class="dirt"></div>
     </div>
 
-    <!-- Torches -->
-    <div class="torch-glow" style="left:160px"></div>
-    <div class="torch-glow" style="right:160px"></div>
-
-    <!-- Ground -->
-    <div class="grass-layer"></div>
-    <div class="ground"></div>
-
-    <!-- Characters (canvases inserted by JS) -->
-    <div class="hint" id="hint">▶ CLICK TO<br>START ADVENTURE</div>
-
-    <!-- Death overlay inside scene -->
+    <div class="hint" id="hint">▶ CLICK TO BEGIN<br>STEVE'S ADVENTURE</div>
     <div class="death-overlay" id="deathOverlay">
       <div class="death-title">YOU DIED!</div>
-      <div class="death-sub" id="deathMsg">Killed by a Creeper</div>
-      <div class="death-score" id="deathScore">Score: 0</div>
+      <div class="death-sub" id="deathMsg"></div>
+      <div class="death-score" id="deathScore"></div>
+      <div class="death-tip" id="deathTip"></div>
     </div>
   </div>
 
   <div class="info-panel">
-    <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBar"></div></div>
-    <div class="hearts" id="heartsRow">
+    <div class="xp-row">
+      <span class="xp-label">XP</span>
+      <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBar" style="width:100%"></div></div>
+      <span class="xp-num" id="xpNum">100</span>
+    </div>
+    <div class="hearts-row" id="heartsRow">
       <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
       <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
       <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
@@ -231,38 +286,45 @@ body{
       <div class="slot full"><span class="lbl">// STRATEGY</span>Mining straight down (terrible idea)</div>
       <div class="slot full"><span class="lbl">// PLAYSTYLE</span>Accidental speedrunner to death</div>
     </div>
-    <div class="status-bar"><span id="statusText">▶ Click the scene to begin...</span></div>
-    <button class="reset-btn" id="resetBtn" onclick="resetAll()">↺ RESPAWN</button>
-    <div class="footer">Credit: JINE &nbsp;|&nbsp; Click to start your doomed adventure</div>
+    <div class="status-bar" id="statusBar"><span id="statusText">▶ Click the scene above to begin...</span></div>
+    <div class="death-selector" id="deathSelector">
+      <div class="death-selector-title">⚰ CHOOSE YOUR FATE</div>
+      <div class="death-btns" id="deathBtns"></div>
+    </div>
+    <button class="reset-btn" id="resetBtn" onclick="resetAll()">↺ PLAY AGAIN</button>
+    <div class="footer">Credit: JINE &nbsp;|&nbsp; 5 ways to die • Click to begin</div>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
 // PIXEL COLORS
-// ─────────────────────────────────────────────
-var N = null;
-var SK='#C8916A',HA='#4A2E10',SH='#3A5BC7',PA='#2E2A6B',BO='#111',EY='#111',
-    GR='#3a7a28',GG='#2d6020',WH='#fff',
-    // Creeper
-    CG='#2a7a2a',CD='#1a5a1a',CE='#111',CM='#111',
-    // Zombie
-    ZS='#5a8a5a',ZH='#3a5a3a',ZE='#ff2222',ZC='#1a3a8a',ZP='#1a1a6a',
-    // Skeleton
-    SS='#ddd',SB='#bbb',SE='#111',
-    // Spider
-    SPB='#1a1a1a',SPR='#cc0000',SPL='#333',
-    // Enderman
-    ENB='#111122',ENE='#cc00cc',ENP='#222233',
-    // Creeper explosion
-    EXY='#ffff00',EXO='#ff8800',EXR='#ff2200';
+// ═══════════════════════════════════════════
+var N=null;
+// Steve
+var SK='#C8916A',HA='#4A2E10',SH='#3A5BC7',PA='#2E2A6B',BO='#111',EY='#111111';
+// Creeper
+var CG='#2d8a2d',CD='#1a5a1a',CE='#111';
+// Zombie
+var ZS='#5a9a5a',ZH='#2a5a2a',ZE='#ee2222',ZC='#1a3a8a',ZP='#1a1a6a';
+// Skeleton
+var SS='#d8d8d8',SB='#b0b0b0',SEY='#111';
+// Enderman
+var ENB='#111122',ENE='#dd00dd',ENP='#1a1a33';
+// Ghast
+var GHW='#f0f0f0',GHG='#d0d0d0',GHE='#cc0000',GHL='#888';
+// Spider
+var SPB='#1a1010',SPE='#ff0000',SPL='#2a2020';
+// Blaze
+var BLF='#ffaa00',BLB='#ff6600',BLC='#ffff00',BLD='#cc4400';
+// Wither
+var WTB='#111',WTS='#222',WTE='#00aaff';
 
-// ─────────────────────────────────────────────
-// PIXEL SPRITE MAPS  (16×32 each, 1px per cell)
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
+// SPRITE MAPS
+// ═══════════════════════════════════════════
 
-// STEVE
-var STEVE=[
+var STEVE_MAP=[
   [N,N,N,N,HA,HA,HA,HA,HA,HA,HA,HA,N,N,N,N],
   [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
   [N,N,N,HA,SK,SK,SK,SK,SK,SK,SK,SK,HA,N,N,N],
@@ -297,8 +359,7 @@ var STEVE=[
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
 ];
 
-// CREEPER (16x32, shorter - 24 rows used)
-var CREEPER=[
+var CREEPER_MAP=[
   [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
   [N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N],
   [N,N,N,CG,CE,CE,CG,CG,CG,CG,CE,CE,CG,N,N,N],
@@ -314,6 +375,7 @@ var CREEPER=[
   [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
   [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
   [N,N,N,N,CG,CG,CG,CG,CG,CG,CG,CG,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
   [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
   [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
   [N,N,N,N,CG,CG,N,N,N,N,CG,CG,N,N,N,N],
@@ -329,12 +391,10 @@ var CREEPER=[
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
-  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
 ];
 
-// ZOMBIE
-var ZOMBIE=[
+var ZOMBIE_MAP=[
   [N,N,N,N,ZH,ZH,ZH,ZH,ZH,ZH,ZH,ZH,N,N,N,N],
   [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
   [N,N,N,ZH,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZS,ZH,N,N,N],
@@ -369,14 +429,13 @@ var ZOMBIE=[
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
 ];
 
-// SKELETON (bone white)
-var SKELETON=[
+var SKELETON_MAP=[
   [N,N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N,N],
   [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
   [N,N,N,SS,N,SS,SS,SS,SS,SS,SS,N,SS,N,N,N],
-  [N,N,N,SS,SE,SS,SE,SS,SS,SE,SS,SE,SS,N,N,N],
+  [N,N,N,SS,SEY,SS,SEY,SS,SS,SEY,SS,SEY,SS,N,N,N],
   [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
-  [N,N,N,SS,SS,SE,SE,SS,SS,SE,SE,SS,SS,N,N,N],
+  [N,N,N,SS,SS,SEY,SEY,SS,SS,SEY,SEY,SS,SS,N,N,N],
   [N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N],
   [N,N,N,N,SS,SS,SS,SS,SS,SS,SS,SS,N,N,N,N],
   [N,N,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,SB,N,N],
@@ -405,8 +464,7 @@ var SKELETON=[
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
 ];
 
-// ENDERMAN (tall thin, use 16x32 but make it tall)
-var ENDERMAN=[
+var ENDERMAN_MAP=[
   [N,N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N,N],
   [N,N,N,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,ENB,N,N,N],
   [N,N,N,ENB,ENE,ENB,ENE,ENB,ENB,ENE,ENB,ENE,ENB,N,N,N],
@@ -441,130 +499,263 @@ var ENDERMAN=[
   [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
 ];
 
-// ─────────────────────────────────────────────
-// DRAW SPRITE ONTO CANVAS
-// ─────────────────────────────────────────────
+// Ghast - a large floating jellyfish-like mob (simplified 16x32)
+var GHAST_MAP=[
+  [N,N,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,N,N],
+  [N,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,N],
+  [GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHE,GHE,GHW,GHW,GHW,GHW,GHW,GHW,GHE,GHE,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHE,GHE,GHW,GHW,GHW,GHW,GHW,GHW,GHE,GHE,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHW,GHW,GHE,GHE,GHE,GHE,GHE,GHE,GHW,GHW,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW],
+  [GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW,GHW],
+  [N,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,GHG,N],
+  [N,N,GHL,N,GHL,N,GHL,N,GHL,N,GHL,N,GHL,N,N,N],
+  [N,N,GHL,N,GHL,N,GHL,N,GHL,N,GHL,N,GHL,N,N,N],
+  [N,N,GHL,N,GHL,N,GHL,N,N,N,GHL,N,GHL,N,N,N],
+  [N,N,N,N,GHL,N,GHL,N,N,N,GHL,N,N,N,N,N],
+  [N,N,N,N,GHL,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
+
+// Spider (wider, shorter)
+var SPIDER_MAP=[
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [SPB,N,N,SPB,N,N,N,N,N,N,N,SPB,N,N,SPB,N],
+  [SPB,SPB,SPB,SPB,N,N,N,N,N,N,N,SPB,SPB,SPB,SPB,N],
+  [N,SPL,SPL,SPL,SPB,N,N,N,N,N,SPB,SPL,SPL,SPL,N,N],
+  [N,SPL,SPE,SPE,SPB,SPB,N,N,N,SPB,SPB,SPE,SPE,SPL,N,N],
+  [N,SPL,SPE,SPE,SPB,SPB,N,N,N,SPB,SPB,SPE,SPE,SPL,N,N],
+  [N,SPL,SPL,SPL,SPB,N,N,N,N,N,SPB,SPL,SPL,SPL,N,N],
+  [N,N,N,N,SPB,N,SPB,SPB,SPB,N,SPB,N,N,N,N,N],
+  [SPB,N,N,SPB,N,N,N,N,N,N,N,SPB,N,N,SPB,N],
+  [SPB,N,N,N,N,N,N,N,N,N,N,N,N,N,SPB,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N],
+  [N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N]
+];
+
+// ═══════════════════════════════════════════
+// RENDER ENGINE
+// ═══════════════════════════════════════════
 function drawSprite(canvas, map, scale) {
-  scale = scale || 2;
-  canvas.width = 16;
-  canvas.height = 32;
-  canvas.style.width = (16*scale)+'px';
-  canvas.style.height = (32*scale)+'px';
-  var ctx = canvas.getContext('2d');
+  scale = scale||2;
+  canvas.width=16; canvas.height=32;
+  canvas.style.width=(16*scale)+'px';
+  canvas.style.height=(32*scale)+'px';
+  var ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,16,32);
-  for(var y=0;y<map.length;y++){
-    for(var x=0;x<map[y].length;x++){
-      if(map[y][x]){
-        ctx.fillStyle=map[y][x];
-        ctx.fillRect(x,y,1,1);
-      }
-    }
-  }
+  for(var y=0;y<map.length;y++)
+    for(var x=0;x<map[y].length;x++)
+      if(map[y][x]){ctx.fillStyle=map[y][x];ctx.fillRect(x,y,1,1);}
 }
 
-function makeChar(map, scale, bottom, right, left) {
-  var c = document.createElement('canvas');
-  c.className = 'char';
-  c.style.imageRendering = 'pixelated';
-  if(bottom!==undefined) c.style.bottom = bottom+'px';
-  if(right!==undefined) c.style.right = right+'px';
-  if(left!==undefined) c.style.left = left+'px';
-  drawSprite(c, map, scale||2);
+function makeChar(map, scale, bottomPx, leftPx) {
+  var c=document.createElement('canvas');
+  c.className='char';
+  c.style.imageRendering='pixelated';
+  drawSprite(c,map,scale||2);
+  if(bottomPx!==undefined) c.style.bottom=bottomPx+'px';
+  if(leftPx!==undefined) c.style.left=leftPx+'px';
   return c;
 }
 
-// ─────────────────────────────────────────────
-// STARS
-// ─────────────────────────────────────────────
-function drawStars() {
-  var sc = document.getElementById('starCanvas');
-  var ctx = sc.getContext('2d');
-  sc.width = 520; sc.height = 160;
-  ctx.clearRect(0,0,520,160);
-  var stars = [];
-  for(var i=0;i<60;i++){
-    stars.push({x:Math.random()*520, y:Math.random()*140, r:Math.random()<0.2?1.5:1});
+// Background canvas
+function drawBackground(type) {
+  var bc=document.getElementById('bgCanvas');
+  var w=540,h=300;
+  bc.width=w; bc.height=h;
+  var ctx=bc.getContext('2d');
+  ctx.clearRect(0,0,w,h);
+
+  if(type==='night') {
+    var grad=ctx.createLinearGradient(0,0,0,h*0.6);
+    grad.addColorStop(0,'#0a0520');
+    grad.addColorStop(1,'#1a0a3e');
+    ctx.fillStyle=grad; ctx.fillRect(0,0,w,h*0.6);
+    // Stars
+    for(var i=0;i<80;i++){
+      ctx.fillStyle='rgba(255,255,220,'+(0.4+Math.random()*0.6)+')';
+      ctx.fillRect(Math.random()*w, Math.random()*h*0.55, Math.random()<0.3?2:1, Math.random()<0.3?2:1);
+    }
+    // Moon
+    ctx.fillStyle='#ffffcc';
+    ctx.beginPath(); ctx.arc(460,30,18,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#0a0520';
+    ctx.beginPath(); ctx.arc(472,28,16,0,Math.PI*2); ctx.fill();
+    // Distant mountains
+    ctx.fillStyle='#1a1030';
+    ctx.beginPath();
+    ctx.moveTo(0,h*0.55);
+    for(var mx=0;mx<=w;mx+=30) ctx.lineTo(mx, h*0.55 - Math.sin(mx*0.04)*25 - Math.sin(mx*0.02)*15);
+    ctx.lineTo(w,h*0.55); ctx.closePath(); ctx.fill();
+  } else if(type==='nether') {
+    var grad2=ctx.createLinearGradient(0,0,0,h*0.6);
+    grad2.addColorStop(0,'#300505');
+    grad2.addColorStop(1,'#600000');
+    ctx.fillStyle=grad2; ctx.fillRect(0,0,w,h*0.6);
+    // Glowing bits
+    for(var j=0;j<30;j++){
+      ctx.fillStyle='rgba(255,'+(50+Math.random()*50)+',0,'+(0.3+Math.random()*0.4)+')';
+      ctx.fillRect(Math.random()*w, Math.random()*h*0.5, 2, 2);
+    }
+  } else if(type==='end') {
+    ctx.fillStyle='#000005'; ctx.fillRect(0,0,w,h*0.6);
+    for(var k=0;k<60;k++){
+      var r=Math.random();
+      ctx.fillStyle=r<0.3?'rgba(180,0,180,0.7)':'rgba(100,0,120,0.5)';
+      ctx.fillRect(Math.random()*w, Math.random()*h*0.55, 1, 1);
+    }
+  } else if(type==='cave') {
+    var grad3=ctx.createLinearGradient(0,0,0,h*0.6);
+    grad3.addColorStop(0,'#080808');
+    grad3.addColorStop(1,'#150a00');
+    ctx.fillStyle=grad3; ctx.fillRect(0,0,w,h*0.6);
+    // Lava glow from bottom
+    var lavaGrad=ctx.createLinearGradient(0,h*0.5,0,h*0.6);
+    lavaGrad.addColorStop(0,'transparent');
+    lavaGrad.addColorStop(1,'rgba(255,60,0,0.3)');
+    ctx.fillStyle=lavaGrad; ctx.fillRect(0,h*0.5,w,h*0.1);
+    // Stalactites
+    ctx.fillStyle='#222';
+    for(var s=0;s<12;s++){
+      var sx2=30+s*45;
+      var sh2=15+Math.random()*25;
+      ctx.beginPath();
+      ctx.moveTo(sx2-6,0); ctx.lineTo(sx2+6,0); ctx.lineTo(sx2,sh2);
+      ctx.closePath(); ctx.fill();
+    }
   }
-  stars.forEach(function(s){
-    ctx.fillStyle = 'rgba(255,255,220,'+(0.5+Math.random()*0.5)+')';
-    ctx.fillRect(s.x,s.y,s.r,s.r);
-  });
 }
-drawStars();
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-var scene = document.getElementById('scene');
-var statusText = document.getElementById('statusText');
-var win = document.getElementById('win');
-var adventureStarted = false;
-var currentHP = 10;
-var score = 0;
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+var scene=document.getElementById('scene');
+var statusBar=document.getElementById('statusBar');
+var statusText=document.getElementById('statusText');
+var win=document.getElementById('win');
+var currentHP=10, score=0, currentDeath=null;
+var started=false;
+var activeIntervals=[];
+var activeTimeouts=[];
 
-function setStatus(t){ statusText.textContent = t; }
+function managedInterval(fn,ms){ var id=setInterval(fn,ms); activeIntervals.push(id); return id; }
+function managedTimeout(fn,ms){ var id=setTimeout(fn,ms); activeTimeouts.push(id); return id; }
 
-function showBubble(text, x, y) {
-  var b = document.createElement('div');
-  b.className = 'bubble';
-  b.textContent = text;
-  b.style.left = x+'px';
-  b.style.bottom = y+'px';
+function clearAllTimers(){
+  activeIntervals.forEach(clearInterval);
+  activeTimeouts.forEach(clearTimeout);
+  activeIntervals=[];activeTimeouts=[];
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function setStatus(txt, type) {
+  statusText.textContent=txt;
+  statusBar.className='status-bar'+(type?' '+type:'');
+}
+
+function flashScene(color){
+  var fo=document.getElementById('flashOverlay');
+  fo.style.background=color||'rgba(200,0,0,0.4)';
+  fo.style.opacity='1';
+  setTimeout(function(){fo.style.opacity='0';},150);
+}
+
+function shakeWin(){
+  win.classList.remove('shake'); void win.offsetWidth; win.classList.add('shake');
+}
+
+function loseHP(n, animate){
+  currentHP=Math.max(0,currentHP-n);
+  var hearts=document.querySelectorAll('.heart');
+  for(var i=hearts.length-1;i>=0;i--){
+    if(i>=currentHP&&!hearts[i].classList.contains('lost')){
+      hearts[i].classList.add('lost');
+      if(animate) hearts[i].classList.add('pop');
+    }
+  }
+  var xp=document.getElementById('xpBar');
+  xp.style.width=(currentHP/10*100)+'%';
+  xp.style.background=currentHP<=2?'#ff2222':currentHP<=5?'#ffaa00':'#4fe04f';
+  document.getElementById('xpNum').textContent=Math.round(currentHP/10*100);
+  shakeWin(); flashScene();
+}
+
+function showDmgNum(x, y, n) {
+  var d=document.createElement('div');
+  d.className='dmg-num';
+  d.textContent='-'+n+'❤';
+  d.style.left=(x-10)+'px'; d.style.top=y+'px';
+  scene.appendChild(d);
+  setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},1000);
+}
+
+function bubble(txt, x, bottom, cls) {
+  var b=document.createElement('div');
+  b.className='bubble '+(cls||'left');
+  b.textContent=txt;
+  b.style.left=x+'px';
+  b.style.bottom=bottom+'px';
   scene.appendChild(b);
   return b;
 }
+function rmBubble(b){ if(b&&b.parentNode) b.parentNode.removeChild(b); }
 
-function removeBubble(b){if(b&&b.parentNode)b.parentNode.removeChild(b);}
-
-function shakeWin(){ win.classList.remove('shake'); void win.offsetWidth; win.classList.add('shake'); }
-
-function flashScene(){
-  scene.classList.remove('red-flash'); void scene.offsetWidth;
-  scene.classList.add('red-flash');
-  setTimeout(function(){ scene.classList.remove('red-flash'); },300);
-}
-
-function loseHP(n) {
-  currentHP = Math.max(0, currentHP - n);
-  var hearts = document.querySelectorAll('.heart');
-  for(var i=hearts.length-1;i>=0;i--){
-    if(i >= currentHP && !hearts[i].classList.contains('lost')){
-      hearts[i].classList.add('lost');
-    }
-  }
-  // low HP pulse
-  if(currentHP <= 3){
-    hearts.forEach(function(h){ if(!h.classList.contains('lost')) h.classList.add('hp-low'); });
-  }
-  shakeWin();
-  flashScene();
-  updateXP();
-}
-
-function updateXP(){
-  var xp = document.getElementById('xpBar');
-  xp.style.width = Math.max(0, (currentHP/10)*100)+'%';
-  if(currentHP<=3) xp.style.background='#ff4444';
-  else if(currentHP<=6) xp.style.background='#ffaa00';
-  else xp.style.background='#4fe04f';
-}
-
-function spawnParticles(ox, oy, colors, count){
-  count = count||12;
+function spawnParticles(cx,cy,colors,count,spread){
+  count=count||12; spread=spread||40;
   for(var i=0;i<count;i++){
     (function(){
-      var p=document.createElement('div');
-      p.className='particle';
+      var p=document.createElement('div'); p.className='particle';
       p.style.background=colors[Math.floor(Math.random()*colors.length)];
-      var px=ox+(Math.random()-0.5)*50;
-      var py=oy;
-      var vx=(Math.random()-0.5)*6;
-      var vy=-(Math.random()*5+2);
+      p.style.width=p.style.height=(3+Math.random()*5)+'px';
+      var px=cx+(Math.random()-0.5)*spread;
+      var py=cy;
+      var vx=(Math.random()-0.5)*7;
+      var vy=-(Math.random()*6+2);
       var op=1;
       p.style.left=px+'px'; p.style.top=py+'px';
       scene.appendChild(p);
       var t=setInterval(function(){
-        vy+=0.35; px+=vx; py+=vy; op-=0.04;
+        vy+=0.4; px+=vx; py+=vy; op-=0.035;
         p.style.left=px+'px'; p.style.top=py+'px'; p.style.opacity=op;
         if(op<=0){clearInterval(t);if(p.parentNode)p.parentNode.removeChild(p);}
       },20);
@@ -572,573 +763,592 @@ function spawnParticles(ox, oy, colors, count){
   }
 }
 
-function showExplosion(x, y){
-  var e=document.createElement('div');
-  e.className='explosion';
-  e.style.left=(x-30)+'px'; e.style.top=(y-30)+'px';
-  e.style.width='60px'; e.style.height='60px';
-  e.style.background='radial-gradient(circle,'+EXY+','+EXO+','+EXR+',transparent)';
-  scene.appendChild(e);
-  spawnParticles(x,y,[EXY,EXO,EXR,CG],20);
-  setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},700);
+function bigExplosion(x,y){
+  flashScene('rgba(255,200,0,0.6)');
+  spawnParticles(x,y,['#ffff00','#ff8800','#ff2200','#ffaa00','#2d8a2d'],30,70);
+  var rings=[40,70,100];
+  rings.forEach(function(r,i){
+    setTimeout(function(){
+      var e=document.createElement('div');
+      e.style.cssText='position:absolute;border-radius:50%;z-index:40;pointer-events:none;background:transparent;';
+      e.style.left=(x-r/2)+'px'; e.style.top=(y-r/2)+'px';
+      e.style.width=r+'px'; e.style.height=r+'px';
+      e.style.border='3px solid rgba(255,'+(150-i*30)+',0,0.8)';
+      e.style.animation='explodeRing 0.5s ease-out forwards';
+      scene.appendChild(e);
+      setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},500);
+    },i*80);
+  });
 }
 
-function moveCharTo(el, targetLeft, duration, cb){
-  var start = parseFloat(el.style.left)||0;
-  var dist = targetLeft - start;
-  var startTime = null;
+// Smooth move
+function moveTo(el, targetLeft, duration, cb) {
+  var start=parseFloat(el.style.left)||0;
+  var dist=targetLeft-start;
+  var t0=null;
   function step(ts){
-    if(!startTime) startTime=ts;
-    var prog=Math.min((ts-startTime)/duration,1);
-    // ease
-    var ease=prog<0.5?2*prog*prog:-1+(4-2*prog)*prog;
-    el.style.left=(start+dist*ease)+'px';
-    if(prog<1) requestAnimationFrame(step);
+    if(!t0) t0=ts;
+    var p=Math.min((ts-t0)/duration,1);
+    var e=p<0.5?2*p*p:-1+(4-2*p)*p;
+    el.style.left=(start+dist*e)+'px';
+    if(p<1) requestAnimationFrame(step);
     else if(cb) cb();
   }
   requestAnimationFrame(step);
 }
 
-function wait(ms){ return new Promise(function(r){setTimeout(r,ms);}); }
+function walkBob(el, speed) {
+  var frame=0;
+  return managedInterval(function(){
+    frame++;
+    var x=parseFloat(el.style.left)||0;
+    el.style.left=(x+speed)+'px';
+    el.style.bottom=(88+Math.abs(Math.sin(frame*0.25))*5)+'px';
+  },20);
+}
 
-function delay(ms, fn){ setTimeout(fn, ms); }
+function clearScene(){
+  var chars=scene.querySelectorAll('canvas.char,.bubble,.particle,.lava,.arrow,.fireball');
+  chars.forEach(function(c){if(c.parentNode) c.parentNode.removeChild(c);});
+}
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
 // DEATH SCREEN
-// ─────────────────────────────────────────────
-function showDeathScreen(killer) {
-  document.getElementById('deathMsg').textContent = 'Killed by '+killer;
-  document.getElementById('deathScore').textContent = 'Score: '+score+' pts';
-  var overlay = document.getElementById('deathOverlay');
-  overlay.style.display = 'flex';
-  document.getElementById('resetBtn').style.display = 'block';
+// ═══════════════════════════════════════════
+var deathTips={
+  creeper:"Tip: Creepers don't make a hissing sound for no reason.",
+  zombie:"Tip: Zombies are slow. Steve is not smarter.",
+  fall:"Tip: Feather Falling enchantment exists. Steve doesn't know.",
+  ghast:"Tip: Deflect fireballs with your fist. Steve forgot his fist.",
+  enderman:"Tip: Never look an Enderman in the eyes. Steve looked.",
+  spider:"Tip: Spiders can climb walls. Steve built a wall anyway.",
+  lava:"Tip: Don't stand in lava. This has been Tip #1 since 2011.",
+  wither:"Tip: The Wither was a mistake. Steve summoned it anyway."
+};
+
+function showDeathScreen(killer, tipKey) {
+  setStatus('☠️ RIP Steve...','danger');
+  managedTimeout(function(){
+    document.getElementById('deathOverlay').style.display='flex';
+    document.getElementById('deathMsg').textContent='Steve was slain by '+killer;
+    document.getElementById('deathScore').textContent='Score: '+score+' pts  |  Survived: ~'+(Math.round(score/20))+'s';
+    document.getElementById('deathTip').textContent=deathTips[tipKey]||'Tip: git gud';
+    document.getElementById('resetBtn').style.display='block';
+  },800);
 }
 
-// ─────────────────────────────────────────────
-// THE ADVENTURE — sequential cinematic scenes
-// ─────────────────────────────────────────────
-function startAdventure() {
-  if(adventureStarted) return;
-  adventureStarted = true;
-  document.getElementById('hint').style.display='none';
-  scene.onclick = null;
+// ═══════════════════════════════════════════
+// DEATH ROUTES — 5 unique deaths
+// ═══════════════════════════════════════════
 
-  // Place Steve
-  var steve = makeChar(STEVE, 2, 80, undefined, 200);
-  steve.id = 'steveEl';
-  scene.appendChild(steve);
+var DEATHS = {
 
-  runScene1_Walking(steve);
-}
+  // ─── DEATH 1: CREEPER AMBUSH ───
+  creeper: function() {
+    setStatus('🌙 A peaceful night walk...','');
+    drawBackground('night');
+    var steve=makeChar(STEVE_MAP,2,88,80);
+    scene.appendChild(steve);
 
-// ── Scene 1: Steve walks forward ──
-function runScene1_Walking(steve) {
-  setStatus('🌙 Steve sets out into the night...');
-  var x = 200;
-  steve.style.left = x+'px';
+    var b1=bubble("nice evening 🌙",50,155,'left');
+    managedTimeout(function(){
+      rmBubble(b1);
+      setStatus('🌙 Steve hears rustling in the bushes...');
+      var b2=bubble("...must be the wind",50,155,'left');
+      managedTimeout(function(){
+        rmBubble(b2);
 
-  var b = showBubble("nice night for mining!", 180, 148);
-  delay(2000, function(){
-    removeBubble(b);
-    // Walk right
-    var walk = setInterval(function(){
-      x += 1.5;
-      steve.style.left = x+'px';
-      // bob
-      steve.style.bottom = (80 + Math.abs(Math.sin(x/8))*4)+'px';
-      if(x > 280){ clearInterval(walk); runScene2_Zombie(steve); }
-    },20);
-  });
-}
+        // Creeper sneaks from right
+        var creeper=makeChar(CREEPER_MAP,2,88,560);
+        scene.appendChild(creeper);
+        var cx=560;
+        setStatus('💚 Something green approaches silently...');
 
-// ── Scene 2: Zombie attacks ──
-function runScene2_Zombie(steve) {
-  setStatus('🧟 A zombie emerges from the shadows!');
+        var sneakInt=managedInterval(function(){
+          cx-=0.8; // Very slow sneak
+          creeper.style.left=cx+'px';
+          if(cx<300){
+            clearInterval(sneakInt);
+            // Steve turns around
+            var b3=bubble("wait... is that-",50,155,'left');
+            managedTimeout(function(){
+              rmBubble(b3);
+              var bc=bubble("Ssssssss...",cx-20,155,'right enemy');
+              setStatus('💚 Creeper: Ssssss... | Steve: oh no');
+              // Flash blink sequence - faster and faster
+              var blinks=0, blinkSpeed=200;
+              function doBlink(){
+                blinks++;
+                creeper.style.filter=blinks%2?'brightness(5) hue-rotate(60deg)':'brightness(1)';
+                blinkSpeed=Math.max(40, blinkSpeed-15);
+                if(blinks<14) managedTimeout(doBlink, blinkSpeed);
+                else{
+                  rmBubble(bc);
+                  creeper.style.filter='brightness(10)';
+                  managedTimeout(function(){
+                    // BOOM
+                    var boomX=cx+16, boomY=120;
+                    bigExplosion(boomX,boomY);
+                    shakeWin(); shakeWin();
+                    managedTimeout(function(){shakeWin();},200);
+                    if(creeper.parentNode) creeper.parentNode.removeChild(creeper);
+                    loseHP(4,true);
+                    showDmgNum(150,120,4);
+                    setStatus('💥 KA-BOOM! Creeper took Steve with it!','danger');
 
-  var zombie = makeChar(ZOMBIE, 2, 80, undefined, -40);
-  zombie.style.left = '-40px';
-  scene.appendChild(zombie);
-
-  var b = showBubble("BRAAAINS", 20, 148);
-
-  // Zombie walks toward Steve
-  var zx = -40;
-  var sx = parseFloat(steve.style.left);
-
-  // Steve runs left a bit
-  var steveRunning = setInterval(function(){
-    sx -= 1;
-    steve.style.left = sx+'px';
-  },30);
-
-  var zWalk = setInterval(function(){
-    zx += 1.8;
-    zombie.style.left = zx+'px';
-    zombie.style.bottom = (80+Math.abs(Math.sin(zx/8))*3)+'px';
-    if(zx > 160){
-      clearInterval(zWalk);
-      clearInterval(steveRunning);
-      removeBubble(b);
-
-      // Zombie hits Steve 3 times
-      var hits = 0;
-      var hitInterval = setInterval(function(){
-        hits++;
-        loseHP(1);
-        // Steve flash
-        steve.style.opacity='0.3';
-        delay(100, function(){ steve.style.opacity='1'; });
-        setStatus('🧟 Zombie attack! Ouch! (hit '+hits+'/3)');
-        score += 10;
-
-        if(hits>=3){
-          clearInterval(hitInterval);
-          setStatus('⚔️ Steve fights back! Zombie defeated!');
-          // Zombie death
-          var b2 = showBubble("ugh...", 100, 148);
-          delay(400, function(){
-            spawnParticles(zx+16, 100, [ZS,ZH,ZC],14);
-            zombie.style.opacity='0';
-            removeBubble(b2);
-            delay(500, function(){
-              if(zombie.parentNode) zombie.parentNode.removeChild(zombie);
-              score += 50;
-              updateXP();
-              delay(800, function(){ runScene3_Creeper(steve); });
-            });
-          });
-        }
-      },600);
-    }
-  },20);
-}
-
-// ── Scene 3: Creeper approaches ──
-function runScene3_Creeper(steve) {
-  setStatus('💚 Something green is approaching from the right...');
-  var cx = 520;
-  var creeper = makeChar(CREEPER, 2, 80, undefined, cx);
-  creeper.style.left = cx+'px';
-  scene.appendChild(creeper);
-
-  // Steve is around x=160, walks right again
-  var sx = parseFloat(steve.style.left);
-  var steveWalk = setInterval(function(){
-    sx += 1.2;
-    steve.style.left = sx+'px';
-    steve.style.bottom=(80+Math.abs(Math.sin(sx/8))*3)+'px';
-  },30);
-
-  var cWalk = setInterval(function(){
-    cx -= 1.5;
-    creeper.style.left = cx+'px';
-    if(cx < 340){
-      clearInterval(cWalk);
-      clearInterval(steveWalk);
-
-      // Steve notices
-      var b = showBubble("wait... is that a-", sx-20, 148);
-      delay(800, function(){
-        removeBubble(b);
-        setStatus('💚 Creeper: Ssssssss...');
-        var b2 = showBubble("Sssssss...", cx-20, 148);
-
-        // Creeper blinks (flash white) then EXPLODES
-        var blinks = 0;
-        var blinkInterval = setInterval(function(){
-          blinks++;
-          creeper.style.filter = blinks%2===0?'brightness(1)':'brightness(5)';
-          if(blinks>=8){
-            clearInterval(blinkInterval);
-            removeBubble(b2);
-            creeper.style.filter='';
-
-            // BOOM
-            var cRect = creeper.getBoundingClientRect();
-            var sRect = scene.getBoundingClientRect();
-            var boomX = cx+16;
-            var boomY = 80;
-            showExplosion(boomX, boomY-20);
-            setStatus('💥 BOOM! Creeper exploded!!!');
-
-            loseHP(3);
-            if(creeper.parentNode) creeper.parentNode.removeChild(creeper);
-
-            // Steve blown back
-            var b3 = showBubble("AAARGH!", sx-20, 148);
-            var vel = -8;
-            var steveY = 80;
-            var flying = setInterval(function(){
-              vel += 0.5;
-              sx -= 2;
-              steveY -= vel;
-              steve.style.left = sx+'px';
-              steve.style.bottom = Math.max(80,steveY)+'px';
-              steve.style.transform='rotate('+(sx*2)+'deg)';
-              if(steveY<=80 && vel>0){
-                clearInterval(flying);
-                steve.style.transform='';
-                steve.style.bottom='80px';
-                removeBubble(b3);
-                score += 100;
-
-                delay(1000, function(){
-                  if(currentHP<=0){ showDeathScreen('a Creeper'); return; }
-                  runScene4_Skeleton(steve);
-                });
+                    // Steve blown back
+                    var sx=parseFloat(steve.style.left);
+                    var sy=88, vy2=-10, vx2=-5;
+                    managedInterval(function(){
+                      vy2+=0.7; sx+=vx2; sy-=vy2;
+                      steve.style.left=sx+'px';
+                      steve.style.bottom=Math.max(-64,sy)+'px';
+                      steve.style.transform='rotate('+(sx*3)+'deg)';
+                    },20);
+                    managedTimeout(function(){ showDeathScreen('a Creeper','creeper'); },2000);
+                  },100);
+                }
               }
-            },20);
+              doBlink();
+            },600);
           }
-        },150);
-      });
-    }
-  },20);
-}
+        },30);
+      },1500);
+    },2000);
+  },
 
-// ── Scene 4: Skeleton shoots arrows ──
-function runScene4_Skeleton(steve) {
-  setStatus('💀 A skeleton spotted Steve!');
+  // ─── DEATH 2: ZOMBIE HORDE ───
+  zombie: function() {
+    setStatus('🌙 Steve stands guard at night...');
+    drawBackground('night');
+    var steve=makeChar(STEVE_MAP,2,88,260);
+    scene.appendChild(steve);
+    var b1=bubble("I am prepared",240,155,'left');
+    managedTimeout(function(){
+      rmBubble(b1);
 
-  var skeleton = makeChar(SKELETON, 2, 80, undefined, -40);
-  skeleton.style.left = '-40px';
-  scene.appendChild(skeleton);
+      // Zombie 1 from left
+      var z1=makeChar(ZOMBIE_MAP,2,88,-40);
+      scene.appendChild(z1);
+      var bz1=bubble("BRAAAINS",0,155,'left enemy');
+      setStatus('🧟 One zombie... Steve can handle this');
+      var z1x=-40;
+      var z1walk=managedInterval(function(){
+        z1x+=1.5; z1.style.left=z1x+'px';
+        z1.style.bottom=(88+Math.abs(Math.sin(z1x*0.2))*4)+'px';
+        if(z1x>180){
+          clearInterval(z1walk);
+          rmBubble(bz1);
+          // Steve hits zombie
+          loseHP(1,true); showDmgNum(220,100,1);
+          setStatus('🧟 Zombie attacks! Steve fights back!');
+          z1.style.filter='brightness(3)';
+          managedTimeout(function(){
+            z1.style.filter='';
+            // Zombie 2 and 3 appear
+            setStatus('🧟🧟 Two more zombies rise from the ground!');
+            var z2=makeChar(ZOMBIE_MAP,2,88,-40);
+            var z3=makeChar(ZOMBIE_MAP,2,88,560);
+            scene.appendChild(z2); scene.appendChild(z3);
+            spawnParticles(100,200,['#5a9a5a','#2a5a2a'],10,20);
+            spawnParticles(400,200,['#5a9a5a','#2a5a2a'],10,20);
+            var bz2=bubble("grgrgrg",0,140,'left enemy');
+            var bz3=bubble("BRAINS",520,140,'right enemy');
 
-  var b = showBubble("rattle rattle", 10, 148);
-
-  var skx = -40;
-  var skWalk = setInterval(function(){
-    skx += 2;
-    skeleton.style.left = skx+'px';
-    skeleton.style.bottom=(80+Math.abs(Math.sin(skx/7))*3)+'px';
-    if(skx > 60){
-      clearInterval(skWalk);
-      removeBubble(b);
-      // Skeleton fires arrows!
-      var arrowsFired = 0;
-      setStatus('🏹 Skeleton is shooting arrows at Steve!');
-
-      var fireInterval = setInterval(function(){
-        arrowsFired++;
-        fireArrow(skeleton, steve, arrowsFired);
-        if(arrowsFired>=4){
-          clearInterval(fireInterval);
-          delay(1800, function(){
-            // Steve counterattacks
-            setStatus('⚔️ Steve charges with his sword!');
-            var sx = parseFloat(steve.style.left);
-            var charge = setInterval(function(){
-              sx -= 2;
-              steve.style.left = sx+'px';
-              if(sx < skx+50){
-                clearInterval(charge);
-                // Hit skeleton
-                loseHP(1); // skeleton gets the last shot
-                spawnParticles(skx+16, 100, [SS,SB,'#fff'],16);
-                skeleton.style.opacity='0';
-                delay(400,function(){
-                  if(skeleton.parentNode) skeleton.parentNode.removeChild(skeleton);
-                  score+=80;
-                  delay(700, function(){
-                    if(currentHP<=0){ showDeathScreen('a Skeleton'); return; }
-                    runScene5_Enderman(steve);
-                  });
-                });
-              }
+            var z2x=-40, z3x=560;
+            var phase=managedInterval(function(){
+              z2x+=1.8; z3x-=1.8;
+              z2.style.left=z2x+'px'; z3.style.left=z3x+'px';
+              z2.style.bottom=(88+Math.abs(Math.sin(z2x*0.2))*4)+'px';
+              z3.style.bottom=(88+Math.abs(Math.sin(z3x*0.2))*4)+'px';
             },20);
-          });
+            managedTimeout(function(){
+              clearInterval(phase);
+              rmBubble(bz2); rmBubble(bz3);
+              // Rapid hits
+              var hits=0;
+              var hitInt=managedInterval(function(){
+                hits++;
+                loseHP(1,true); showDmgNum(220,100+(hits*10),1);
+                setStatus('🧟 Surrounded! (hit '+hits+'/4)','warning');
+                flashScene();
+                if(hits>=4){
+                  clearInterval(hitInt);
+                  loseHP(2,true);
+                  setStatus('🧟 Steve overwhelmed by the horde!','danger');
+                  steve.style.transition='all 0.6s';
+                  steve.style.opacity='0.3';
+                  steve.style.transform='rotate(90deg) translateX(-20px)';
+                  managedTimeout(function(){ showDeathScreen('a zombie horde','zombie'); },1000);
+                }
+              },700);
+            },2000);
+          },600);
         }
-      }, 900);
-    }
-  },20);
-}
+      },20);
+    },1800);
+  },
 
-function fireArrow(skeleton, steve, num) {
-  var arrow = document.createElement('div');
-  arrow.style.cssText='position:absolute;width:12px;height:3px;background:#8B6340;z-index:30;image-rendering:pixelated;';
-  var skx = parseFloat(skeleton.style.left);
-  var sx = parseFloat(steve.style.left);
-  var startX = skx + 32;
-  var startY = 160; // from bottom of scene
-  arrow.style.left = startX+'px';
-  arrow.style.bottom = '120px';
-  scene.appendChild(arrow);
+  // ─── DEATH 3: FALL INTO VOID (THE CLASSICS) ───
+  fall: function() {
+    setStatus('⛏️ Steve is mining... what could go wrong?');
+    drawBackground('cave');
 
-  var ax = startX;
-  var targetX = sx + 8;
-  var speed = 5;
-  var miss = (num%3===0); // every 3rd arrow misses
+    // Change ground to stone look
+    document.getElementById('grassEl').style.background='#555';
+    document.getElementById('grassEl').style.height='6px';
 
-  var t = setInterval(function(){
-    ax += speed;
-    arrow.style.left=ax+'px';
-    if(!miss) arrow.style.bottom=(120 - Math.sin((ax-startX)/60)*20)+'px';
-    else arrow.style.bottom=(120 + (ax-startX)/10)+'px'; // flies over
+    var steve=makeChar(STEVE_MAP,2,88,260);
+    scene.appendChild(steve);
+    var b1=bubble("I'll just dig straight down",220,155,'left');
+    var pick=bubble("⛏️",240,185,'left');
 
-    if(ax > targetX+50 || ax > 520){
-      clearInterval(t);
-      if(arrow.parentNode) arrow.parentNode.removeChild(arrow);
-      if(!miss){
-        loseHP(1);
-        setStatus('🏹 Arrow hit Steve! ('+num+'/4)');
-      } else {
-        setStatus('🏹 Arrow '+num+' missed!');
-      }
-    }
-  },20);
-}
+    managedTimeout(function(){
+      rmBubble(b1); rmBubble(pick);
+      setStatus('⛏️ Steve ignores Rule #1 of Minecraft...');
 
-// ── Scene 5: Enderman teleports ──
-function runScene5_Enderman(steve) {
-  setStatus('👁️ You feel watched... the darkness shifts...');
-  score += 80;
+      // Mining animation - steve bobs down slowly
+      var mineY=88, mineCount=0;
+      spawnParticles(270,170,['#555','#888','#aa9977'],12,20);
 
-  // Dramatic pause with purple particle effects
-  delay(1200, function(){
-    // Enderman appears via teleport particles
-    var ex = 340;
-    spawnParticles(ex+16, 120, [ENE,'#aa00aa','#660066'],20);
+      var mineInt=managedInterval(function(){
+        mineCount++;
+        mineY-=0.5;
+        steve.style.bottom=mineY+'px';
+        if(mineCount%20===0) spawnParticles(270,150+mineCount,['#555','#888'],6,15);
+        if(mineY<50){
+          clearInterval(mineInt);
+          // CRACK sound effect visual
+          var crack=document.createElement('div');
+          crack.style.cssText='position:absolute;left:240px;bottom:40px;font-size:14px;z-index:60;color:#ff8800;font-family:monospace;text-shadow:1px 1px #000;';
+          crack.textContent='*CRACK*';
+          scene.appendChild(crack);
+          managedTimeout(function(){
+            if(crack.parentNode) crack.parentNode.removeChild(crack);
+            setStatus('💀 The floor gave way!','danger');
+            // Steve freefalls
+            var fallY=mineY, vel=0, rot=0;
+            var fallInt=managedInterval(function(){
+              vel+=1.2; fallY-=vel; rot+=15;
+              steve.style.bottom=fallY+'px';
+              steve.style.transform='rotate('+rot+'deg)';
+              // Lava glow gets brighter
+              document.getElementById('bgCanvas').style.filter='brightness('+(1+Math.abs(fallY)/100)*')';
+            },20);
+            managedTimeout(function(){
+              clearInterval(fallInt);
+              // Lava splash
+              var lavaEl=document.createElement('div');
+              lavaEl.className='lava';
+              scene.appendChild(lavaEl);
+              loseHP(10,true);
+              bigExplosion(270,250);
+              flashScene('rgba(255,100,0,0.7)');
+              setStatus('🌋 Steve fell into lava. Classic.','danger');
+              steve.style.opacity='0';
+              managedTimeout(function(){ showDeathScreen('gravity + lava','fall'); },1200);
+            },2500);
+          },400);
+        }
+      },30);
+    },2200);
+  },
 
-    delay(400, function(){
-      var enderman = makeChar(ENDERMAN, 2, 80, undefined, ex);
-      enderman.style.left = ex+'px';
-      enderman.style.filter='drop-shadow(0 0 8px #aa00aa)';
-      scene.appendChild(enderman);
+  // ─── DEATH 4: GHAST IN THE NETHER ───
+  ghast: function() {
+    setStatus('🔥 Steve enters the Nether... bad idea');
+    drawBackground('nether');
+    document.getElementById('grassEl').style.background='#8B0000';
+    document.getElementById('groundWrap').querySelector('.dirt').style.background='#4a0000';
 
-      setStatus('👁️ ENDERMAN! DO NOT make eye contact!');
-      var b = showBubble("👁️👁️", ex, 148);
+    var steve=makeChar(STEVE_MAP,2,88,260);
+    scene.appendChild(steve);
+    var lavaEl=document.createElement('div');
+    lavaEl.className='lava';
+    scene.appendChild(lavaEl);
 
-      delay(1000, function(){
-        removeBubble(b);
-        // Enderman teleports closer 3 times
-        var teleports = 0;
-        function teleport(){
-          teleports++;
-          spawnParticles(ex+16, 120, [ENE,'#cc00cc'],10);
-          enderman.style.opacity='0';
-          delay(200, function(){
-            ex -= 80;
-            enderman.style.left=ex+'px';
-            enderman.style.opacity='1';
-            spawnParticles(ex+16, 120, [ENE,'#cc00cc'],10);
+    var b1=bubble("totally fine here",240,155,'left');
+    managedTimeout(function(){
+      rmBubble(b1);
+      // Ghast floats in from top right
+      var ghast=makeChar(GHAST_MAP,2,undefined,500);
+      ghast.style.bottom=undefined;
+      ghast.style.top='-64px';
+      ghast.style.left='400px';
+      ghast.style.bottom='';
+      ghast.style.position='absolute';
+      scene.appendChild(ghast);
 
-            if(ex > 200 && teleports < 3){
-              loseHP(1);
-              setStatus('💜 Enderman teleports closer! ('+teleports+'/3)');
-              delay(700, teleport);
-            } else {
-              // Final confrontation
-              loseHP(2);
-              setStatus('💜 Enderman SCREAMS and attacks!');
-              var sb = showBubble('☠️ SCREEE', ex, 148);
+      setStatus('👻 A distant wail echoes...');
+      var bg=bubble("HUUUUU",380,160,'right enemy');
 
-              delay(600, function(){
-                removeBubble(sb);
-                // Steve throws water bucket (weakness!)
-                setStatus('💧 Steve splashes water! Enderman retreats!');
-                var water = showBubble("HAVE SOME WATER >:)", parseFloat(steve.style.left)-20, 148);
-                spawnParticles(ex+16, 80, ['#00aaff','#0066ff','#00ffff'],20);
-                enderman.style.filter='';
-                var ev = 6;
-                var moveAway = setInterval(function(){
-                  ex+=ev; ev+=0.2;
-                  enderman.style.left=ex+'px';
-                  enderman.style.opacity = Math.max(0, 1-(ex-300)/150);
-                  if(ex > 540){
-                    clearInterval(moveAway);
-                    if(enderman.parentNode) enderman.parentNode.removeChild(enderman);
-                    removeBubble(water);
-                    score+=120;
-                    delay(800, function(){
-                      if(currentHP<=0){ showDeathScreen('an Enderman'); return; }
-                      runScene6_FinalBoss(steve);
-                    });
-                  }
-                },20);
-              });
+      // Ghast floats down and across
+      var gy=-64, gFloat=0;
+      var ghastMoveInt=managedInterval(function(){
+        gy+=0.8;
+        gFloat+=0.05;
+        ghast.style.top=(gy+Math.sin(gFloat)*8)+'px';
+        if(gy>60){clearInterval(ghastMoveInt); fireGhastBalls();}
+      },20);
+
+      function fireGhastBalls(){
+        rmBubble(bg);
+        setStatus('🔥 Ghast fires fireballs! Deflect them!');
+        var ballsFired=0;
+        function fireBall(){
+          ballsFired++;
+          var fb=document.createElement('div');
+          fb.className='fireball';
+          var startX=parseInt(ghast.style.left)+16;
+          var startY=parseInt(ghast.style.top)+30;
+          fb.style.left=startX+'px';
+          fb.style.top=startY+'px';
+          fb.style.position='absolute';
+          fb.style.zIndex='40';
+          scene.appendChild(fb);
+
+          var steveX=parseFloat(steve.style.left)+8;
+          var steveY2=300-88-32;
+          var dist=Math.sqrt(Math.pow(steveX-startX,2)+Math.pow(steveY2-startY,2));
+          var vx=(steveX-startX)/dist*4;
+          var vy=(steveY2-startY)/dist*4;
+          var fbx=startX, fby=startY;
+          var hit=ballsFired<=3; // first 3 hit
+
+          var fbInt=managedInterval(function(){
+            fbx+=vx; fby+=vy;
+            fb.style.left=fbx+'px'; fb.style.top=fby+'px';
+            fb.style.boxShadow='0 0 '+(8+Math.sin(fbx*0.1)*4)+'px #ff6600';
+
+            // Check if hit Steve area
+            var sx2=parseFloat(steve.style.left);
+            if(fbx>sx2-10&&fbx<sx2+40&&fby>120){
+              clearInterval(fbInt);
+              if(fb.parentNode) fb.parentNode.removeChild(fb);
+              if(hit){
+                loseHP(1,true);
+                showDmgNum(sx2,100+(ballsFired*8),1);
+                setStatus('🔥 Fireball hit! ('+ballsFired+'/4)','warning');
+                spawnParticles(sx2+16,150,['#ff8800','#ffff00','#ff2200'],10,20);
+                flashScene('rgba(255,100,0,0.5)');
+              }
             }
-          });
+            if(fby>290||fbx<0||fbx>560){
+              clearInterval(fbInt);
+              if(fb.parentNode) fb.parentNode.removeChild(fb);
+              if(!hit) spawnParticles(fbx,fby,['#ff8800','#ff2200'],6);
+            }
+          },20);
+
+          if(ballsFired<5) managedTimeout(fireBall, 1200);
+          else {
+            managedTimeout(function(){
+              loseHP(2,true);
+              setStatus('🔥 Ghast carpet bombs Steve!','danger');
+              // Big fireball
+              var bigFb=document.createElement('div');
+              bigFb.className='fireball';
+              bigFb.style.width='28px'; bigFb.style.height='28px';
+              bigFb.style.left=(parseInt(ghast.style.left)+8)+'px';
+              bigFb.style.top=(parseInt(ghast.style.top)+24)+'px';
+              bigFb.style.position='absolute';
+              scene.appendChild(bigFb);
+              var bfx=parseFloat(bigFb.style.left), bfy=parseFloat(bigFb.style.top);
+              var tx=parseFloat(steve.style.left)+8, ty=180;
+              var bdist=Math.sqrt(Math.pow(tx-bfx,2)+Math.pow(ty-bfy,2));
+              var bvx=(tx-bfx)/bdist*3, bvy=(ty-bfy)/bdist*3;
+              var bfInt=managedInterval(function(){
+                bfx+=bvx; bfy+=bvy;
+                bigFb.style.left=bfx+'px'; bigFb.style.top=bfy+'px';
+                if(bfy>200){
+                  clearInterval(bfInt);
+                  if(bigFb.parentNode) bigFb.parentNode.removeChild(bigFb);
+                  bigExplosion(bfx,bfy);
+                  loseHP(10,true);
+                  shakeWin();shakeWin();
+                  steve.style.opacity='0';
+                  setStatus('💀 Steve reduced to ashes by Ghast!','danger');
+                  managedTimeout(function(){showDeathScreen('a Ghast','ghast');},1200);
+                }
+              },20);
+            },2000);
+          }
         }
-        delay(600, teleport);
-      });
+        fireBall();
+      }
+    },2000);
+  },
+
+  // ─── DEATH 5: THE ENDERMAN STARE ───
+  enderman: function() {
+    setStatus('👁️ The End. Silence. Then... eyes.');
+    drawBackground('end');
+    document.getElementById('grassEl').style.background='#1a1a2a';
+    document.getElementById('groundWrap').querySelector('.dirt').style.background='#0a0a1a';
+
+    var steve=makeChar(STEVE_MAP,2,88,260);
+    scene.appendChild(steve);
+
+    // Multiple endermen in background - dim
+    var endermen=[];
+    [60,400,460].forEach(function(x){
+      var en=makeChar(ENDERMAN_MAP,2,88,x);
+      en.style.opacity='0.15';
+      en.style.filter='drop-shadow(0 0 4px #aa00aa)';
+      scene.appendChild(en);
+      endermen.push(en);
     });
-  });
-}
 
-// ── Scene 6: FINAL — Mining down, lava, all mobs rush ──
-function runScene6_FinalBoss(steve) {
-  setStatus('⛏️ Steve thinks: "I survived! Time to mine..."');
-  score += 100;
-  var b = showBubble("surely mining straight down\nis a good idea", parseFloat(steve.style.left)-20, 148);
+    var b1=bubble("it's quiet...",240,155,'left');
+    managedTimeout(function(){
+      rmBubble(b1);
+      setStatus('👁️ You sense something watching...');
 
-  delay(2000, function(){
-    removeBubble(b);
-    setStatus('⛏️ Steve mines straight down...');
-    // Steve drops
-    var sy = 80;
-    var vel = 0;
-    var sx = parseFloat(steve.style.left);
-    steve.style.bottom=sy+'px';
-
-    var dropIn = setInterval(function(){
-      vel+=0.6; sy-=vel;
-      steve.style.bottom=sy+'px';
-      steve.style.transform='rotate('+(vel*5)+'deg)';
-      if(sy < -64){
-        clearInterval(dropIn);
-        steve.style.display='none';
-        delay(500, function(){ runScene7_Underground(steve); });
-      }
-    },20);
-  });
-}
-
-function runScene7_Underground(steve) {
-  // Change sky to cave
-  scene.style.background='linear-gradient(to bottom,#111 0%,#1a0a00 60%,#330800 100%)';
-  document.querySelector('.grass-layer').style.background='#2d1a0a';
-  document.querySelector('.ground').style.background='#1a0800';
-  document.querySelector('.moon').style.display='none';
-
-  setStatus('🌋 Underground! Lava everywhere!');
-
-  // Lava glow at bottom
-  var lava = document.createElement('div');
-  lava.style.cssText='position:absolute;bottom:0;left:0;width:100%;height:40px;background:linear-gradient(to top,#ff4400,#ff8800);opacity:0.8;z-index:5;';
-  scene.appendChild(lava);
-
-  // Reset Steve position underground
-  steve.style.display='block';
-  steve.style.left='260px';
-  steve.style.bottom='80px';
-  steve.style.transform='';
-
-  var b = showBubble("oh no", 240, 148);
-  delay(800, function(){
-    removeBubble(b);
-    // ALL mobs appear
-    setStatus('💀🧟💚👁️ ALL MOBS RUSH AT ONCE!!!');
-
-    var z2 = makeChar(ZOMBIE, 2, 80, undefined, -30);
-    var sk2 = makeChar(SKELETON, 2, 80, undefined, -70);
-    var cr2 = makeChar(CREEPER, 2, 80, undefined, 520);
-    var en2 = makeChar(ENDERMAN, 2, 80, undefined, 500);
-    z2.style.left='-30px'; sk2.style.left='-70px';
-    cr2.style.left='520px'; en2.style.left='500px';
-    scene.appendChild(z2); scene.appendChild(sk2);
-    scene.appendChild(cr2); scene.appendChild(en2);
-
-    // Rush animation
-    var frames=0;
-    var steveX=260;
-    var rush = setInterval(function(){
-      frames++;
-      var z2x=parseFloat(z2.style.left)+2.5;
-      var sk2x=parseFloat(sk2.style.left)+2;
-      var cr2x=parseFloat(cr2.style.left)-2.2;
-      var en2x=parseFloat(en2.style.left)-1.8;
-      z2.style.left=z2x+'px';
-      sk2.style.left=sk2x+'px';
-      cr2.style.left=cr2x+'px';
-      en2.style.left=en2x+'px';
-
-      // Steve panics
-      steveX += Math.sin(frames/5)*2;
-      steve.style.left=steveX+'px';
-
-      // Hit moments
-      if(frames===40){ loseHP(1); setStatus('🧟 Zombie grabs Steve!'); }
-      if(frames===60){ loseHP(1); setStatus('💀 Skeleton arrow hits!'); }
-      if(frames===75){ loseHP(1); setStatus('👁️ Enderman strikes!'); }
-      if(frames===90){
-        loseHP(1);
-        // Creeper explodes
-        showExplosion(steveX, 100);
-        setStatus('💥 CREEPER EXPLODES IN THE CAVE!!!');
-      }
-
-      if(frames>=100){
-        clearInterval(rush);
-
-        if(currentHP > 0){
-          // Steve survives somehow
-          loseHP(currentHP); // kill remaining HP
-        }
-
-        delay(600, function(){
-          // Dramatic slow death
-          steve.style.transition='all 0.8s ease';
-          steve.style.opacity='0.4';
-          steve.style.transform='rotate(90deg)';
-          steve.style.bottom='55px';
-
-          setStatus('☠️ Steve has perished... into the lava');
-          delay(1000, function(){
-            showDeathScreen('a mob swarm + lava + their own bad decisions');
-          });
+      // Eyes appear
+      managedTimeout(function(){
+        endermen.forEach(function(en){
+          en.style.opacity='0.5';
+          en.style.filter='drop-shadow(0 0 8px #cc00cc)';
         });
-      }
-    },30);
+        setStatus('👁️ ...too quiet. Eyes open in the dark.');
+
+        managedTimeout(function(){
+          var b2=bubble("huh?",240,155,'left');
+          managedTimeout(function(){
+            rmBubble(b2);
+            // Steve accidentally looks at one
+            var b3=bubble("wait are those-",240,155,'left');
+            managedTimeout(function(){
+              rmBubble(b3);
+              // SCREECH - one enderman teleports to Steve
+              var mainEn=makeChar(ENDERMAN_MAP,2,88,600);
+              mainEn.style.filter='drop-shadow(0 0 12px #ff00ff)';
+              scene.appendChild(mainEn);
+              spawnParticles(600,120,[ENE,'#cc00cc','#880088'],15,30);
+              setStatus('👁️ ENDERMAN MADE EYE CONTACT!','danger');
+              flashScene('rgba(150,0,150,0.4)');
+
+              var b4=bubble("SCHREEEE",540,155,'right enemy');
+              managedTimeout(function(){
+                rmBubble(b4);
+                // Teleport sequence - rapid
+                var teleportCount=0;
+                function teleport(){
+                  teleportCount++;
+                  var newX=100+Math.random()*300;
+                  spawnParticles(parseFloat(mainEn.style.left)+16,120,[ENE,'#cc00cc'],8,20);
+                  mainEn.style.opacity='0';
+                  managedTimeout(function(){
+                    mainEn.style.left=newX+'px';
+                    mainEn.style.opacity='1';
+                    spawnParticles(newX+16,120,[ENE,'#cc00cc'],8,20);
+                    loseHP(1,true);
+                    showDmgNum(newX,100+(teleportCount*10),1);
+                    setStatus('👁️ Enderman teleports and strikes! ('+teleportCount+'/6)','warning');
+                    flashScene('rgba(150,0,150,0.3)');
+
+                    if(teleportCount<6) managedTimeout(teleport,800);
+                    else {
+                      // Final strike
+                      managedTimeout(function(){
+                        mainEn.style.left='220px';
+                        spawnParticles(220,100,[ENE,'#ff00ff'],20,30);
+                        loseHP(10,true);
+                        shakeWin();shakeWin();
+                        flashScene('rgba(200,0,200,0.6)');
+                        setStatus('💜 Enderman dealt the final blow!','danger');
+                        // All endermen activate
+                        endermen.forEach(function(en,i){
+                          managedTimeout(function(){
+                            en.style.opacity='1';
+                            en.style.filter='drop-shadow(0 0 16px #ff00ff)';
+                          },i*200);
+                        });
+                        steve.style.transition='all 0.8s';
+                        steve.style.opacity='0';
+                        steve.style.transform='scale(0) rotate(360deg)';
+                        managedTimeout(function(){showDeathScreen('an Enderman','enderman');},1500);
+                      },600);
+                    }
+                  },200);
+                }
+                managedTimeout(teleport,400);
+              },800);
+            },1000);
+          },1200);
+        },1500);
+      },2000);
+    },2200);
+  }
+};
+
+// ═══════════════════════════════════════════
+// MAIN ENTRY
+// ═══════════════════════════════════════════
+function startAdventure() {
+  if(started) return;
+  started=true;
+  scene.onclick=null;
+  document.getElementById('hint').style.display='none';
+  document.getElementById('deathSelector').style.display='block';
+
+  var deathBtns=document.getElementById('deathBtns');
+  deathBtns.innerHTML='';
+
+  var options=[
+    {key:'creeper',label:'💚 CREEPER\nAMBUSH',desc:'Sneaks up silently'},
+    {key:'zombie', label:'🧟 ZOMBIE\nHORDE',desc:'They just keep coming'},
+    {key:'fall',   label:'⛏️ MINE\nSTRAIGHT DOWN',desc:'Classic mistake'},
+    {key:'ghast',  label:'👻 GHAST\nFIREBALLS',desc:'Nether is always a mistake'},
+    {key:'enderman',label:'👁️ ENDERMAN\nSTARE',desc:'Never make eye contact'}
+  ];
+
+  options.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='death-btn';
+    btn.innerHTML=opt.label.replace('\n','<br>')+'<br><span style="font-size:5px;opacity:0.6">'+opt.desc+'</span>';
+    btn.onclick=function(){
+      document.getElementById('deathSelector').style.display='none';
+      currentDeath=opt.key;
+      drawBackground('night');
+      managedTimeout(function(){ DEATHS[opt.key](); },300);
+    };
+    deathBtns.appendChild(btn);
   });
 }
 
-// ─────────────────────────────────────────────
-// RESET
-// ─────────────────────────────────────────────
-function resetAll() {
-  adventureStarted = false;
-  currentHP = 10;
-  score = 0;
-
-  // Reset scene
-  scene.style.background='linear-gradient(to bottom,#1a0a2e 0%,#2a0a4e 40%,#1a0a2e 100%)';
-  var grassLayer = document.querySelector('.grass-layer');
-  if(grassLayer) grassLayer.style.background='#3a7a28';
-  var groundEl = document.querySelector('.ground');
-  if(groundEl) groundEl.style.background='#2d1a0a';
-  var moonEl = document.querySelector('.moon');
-  if(moonEl) moonEl.style.display='';
-
-  // Remove all dynamic elements
-  var toRemove = scene.querySelectorAll('canvas.char, .bubble, .explosion, .particle, div[style*="lava"], div[style*="linear-gradient"]');
-  toRemove.forEach(function(e){ e.remove(); });
-
-  // Remove extra canvases/divs added in underground scene
-  var lavaEl = scene.querySelector('div');
-  // clear scene of dynamics safely
-  var children = Array.from(scene.children);
-  children.forEach(function(c){
-    if(c.tagName==='CANVAS'&&c.className==='char') c.remove();
-    if(c.style&&c.style.background&&c.style.background.indexOf('ff4400')>=0) c.remove();
-  });
-
-  // Reset hearts
-  document.querySelectorAll('.heart').forEach(function(h){
-    h.classList.remove('lost','hp-low');
-  });
-
-  // Reset XP bar
-  var xp=document.getElementById('xpBar');
-  xp.style.width='100%';
-  xp.style.background='#4fe04f';
-
-  // Hide death overlay
+function resetAll(){
+  clearAllTimers();
+  currentHP=10; score=0; started=false;
+  clearScene();
   document.getElementById('deathOverlay').style.display='none';
-
-  // Reset buttons
   document.getElementById('resetBtn').style.display='none';
-  setStatus('▶ Click the scene to begin again...');
-
-  // Hint
+  document.getElementById('deathSelector').style.display='none';
   document.getElementById('hint').style.display='block';
-
-  // Re-enable click
-  scene.onclick = startAdventure;
+  document.querySelectorAll('.heart').forEach(function(h){h.className='heart';});
+  document.getElementById('xpBar').style.width='100%';
+  document.getElementById('xpBar').style.background='#4fe04f';
+  document.getElementById('xpNum').textContent='100';
+  document.getElementById('grassEl').style.background='#3a7a28';
+  document.getElementById('grassEl').style.height='18px';
+  document.getElementById('groundWrap').querySelector('.dirt').style.background='#5c3d1a';
+  document.getElementById('bgCanvas').style.filter='';
+  document.getElementById('flashOverlay').style.opacity='0';
   win.classList.remove('shake');
-  drawStars();
+  statusBar.className='status-bar';
+  setStatus('▶ Click the scene above to begin...');
+  drawBackground('night');
+  scene.onclick=startAdventure;
 }
 
-// initial click binding
-scene.onclick = startAdventure;
+// Explosion ring animation (keyframe injected)
+var style=document.createElement('style');
+style.textContent='@keyframes explodeRing{0%{transform:scale(0.5);opacity:1;}100%{transform:scale(2);opacity:0;}}';
+document.head.appendChild(style);
+
+// Init
+drawBackground('night');
+scene.onclick=startAdventure;
 </script>
 </body>
 </html>
