@@ -1,28 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Minecraft Site</title>
 <style>
-body {
-  background-color: #2b2b2b;
-  color: white;
-  font-family: monospace;
-  text-align: center;
+body{
+margin:0;
+background:#1c1c1c;
+color:#fff;
+font-family:monospace;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
-.box {
-  border: 2px solid green;
-  padding: 20px;
-  margin: 50px;
+
+.container{
+text-align:center;
+border:2px solid #3aa655;
+padding:30px;
+width:320px;
+background:#111;
+box-shadow:0 0 20px rgba(58,166,85,0.4);
+}
+
+h1{
+margin:0 0 15px 0;
+font-size:22px;
+letter-spacing:2px;
+}
+
+.box{
+border:1px solid #3aa655;
+padding:10px;
+margin:10px 0;
+}
+
+button{
+background:#3aa655;
+border:none;
+padding:10px;
+color:#fff;
+width:100%;
+cursor:pointer;
+font-family:monospace;
+}
+
+button:hover{
+background:#2e8744;
+}
+
+.credit{
+margin-top:15px;
+font-size:12px;
+opacity:0.7;
 }
 </style>
 </head>
 <body>
 
-<div class="box">
-<h1>⛏ Minecraft Profile</h1>
-<p>Player: Steve</p>
-<p>Mode: Survival</p>
-<p>Status: Mining...</p>
+<div class="container">
+<h1>⛏ MINECRAFT MENU</h1>
+
+<div class="box">Survival Mode</div>
+<div class="box">Creative Mode</div>
+<div class="box">Settings</div>
+
+<button>Start Game</button>
+
+<div class="credit">Credit: JINE</div>
 </div>
 
 </body>
